@@ -1,0 +1,163 @@
+@page {
+	size: 72mm 297mm;
+  margin: .5cm;
+}
+
+@media print {
+	body {
+		width: -100%;
+		visibility: hidden;
+		margin: 0% !important;
+		padding: 0% !important;
+	}
+
+	body #productsContainer .productCard {
+		visibility: hidden;
+		display: none;
+	}
+
+	body header * {
+		visibility: hidden;
+		display: none;
+	}
+
+	body header #searchBar {
+		visibility: hidden !important;
+		display: none !important;
+	}
+
+	body .ri-arrow-right-s-line, body .ri-arrow-down-s-fill, body .ri-arrow-up-s-fill {
+		visibility: hidden;
+		display: none;
+	}
+
+	#bill, #billKot {
+		padding: 0% !important;
+		margin: 0% !important;
+		visibility: visible !important;
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		width: -100%;
+		box-shadow: none;
+		font-size: 17px;
+		overflow-x: visible;
+	}
+
+	#bill *, #billKot * {
+		overflow-x: visible;
+		width: 100%;
+		font-family: var(--primary-font) !important;
+		margin: 3px !important;
+	}
+
+	#bill h3, #billKot h3 {
+		font-size: 24px !important;
+		font-weight: 700 !important;
+	}
+
+	#bill h4, #billKot h4 {
+		font-size: 17px !important;
+		font-weight: 600 !important;
+	}
+
+	#bill .topFields, #billKot .topFields {
+		font-size: 15px !important;
+		text-align: start;
+		font-weight: 600;
+		padding-left: 10px;
+	}
+
+	#bill img, #billKot img {
+		position: relative;
+		top: 0;
+		margin: 30px;
+		height: 200px;
+		left: 50%;
+		transform: translateX(-50%);
+	}
+
+	#bill table, #billKot table {
+		border-top: 2px solid black;
+		position: relative;
+	}
+
+	#bill table tr th, #billKot table tr th {
+		font-size: 18px;
+		font-weight: 600;
+		padding: 10px;
+		border-bottom: 2px solid black;
+	}
+
+	#bill table tr tr, #billKot table tr tr {
+		border-bottom: 2px solid black;
+	}
+
+	#bill table tr th, #bill table tr td, #billKot table tr th, #billKot table tr td {
+		text-align: center;
+		font-size: 17px !important;
+		font-weight: 600;
+	}
+
+	#bill table tr td:nth-child(1), #billKot table tr td:nth-child(1) {
+		text-align: start;
+	}
+
+	#bill hr, #billKot hr {
+		border-bottom: 2px solid black;
+		height: 0px;
+		padding: 0px;
+	}
+
+	#bill .row, #billKot .row {
+		display: flex;
+		justify-content: space-between;
+	}
+
+	#bill .row h4, #billKot .row h4 {
+		width: fit-content;
+	}
+
+	#bill .info, #billKot .info {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		font-size: 17px;
+		font-weight: 600;
+	}
+
+	#bill .detail, #billKot .detail {
+		font-size: 17px;
+		font-weight: 600;
+	}
+
+	#bill .tax, #billKot .tax {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		font-size: 17px;
+		margin-bottom: -5px;
+	}
+
+	#bill .tax p, #billKot .tax p {
+		margin-bottom: -5px;
+		padding: 0px;
+		font-size: 17px;
+		font-weight: 600;
+	}
+
+	#bill .total, #billKot .total {
+		font-size: 23px;
+		font-weight: bold;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding-right: 20px;
+	}
+
+	#bill p.thanking, #billKot p.thanking {
+		font-size: 18px;
+		font-weight: 500;
+		text-align: center;
+	}
+}
