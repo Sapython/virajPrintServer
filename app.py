@@ -5,11 +5,13 @@ import win32print
 import datetime
 import jinja2
 import pdfkit
+import os
+
+os.add_dll_directory(r"C:\Program Files\GTK3-Runtime Win64\bin")
 from weasyprint import HTML, CSS
 version = '1.0.0'
 app = Flask(__name__)
 environment = jinja2.Environment()
-path_to_wkhtmltopdf = r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
 billTemplate = '''
 <div id="bill">
     <h3 style="text-align: center;font-style:bold;">{{projectName}}</h3>
@@ -205,24 +207,23 @@ data = {
     ],
     'specialInstructions': 'Special Instructions'
 }
-compiledKot= kotInstance.render(
-    data=data
-)
-with open('temp_kot.html', 'w') as f:
-    f.write(compiledKot)
-config = pdfkit.configuration(wkhtmltopdf=path_to_wkhtmltopdf)
-date = datetime.datetime.now().strftime('%d-%m-%Y %H-%M-%S')
-print(f'kots/temp_kot_{date}.pdf')
-filename = f'kots/kot_{date}.pdf'
-HTML(string=compiledKot).write_pdf(filename,
-    stylesheets=[CSS(filename='style.css')])
-printers = win32print.EnumPrinters(win32print.PRINTER_ENUM_LOCAL, None, 1)
-tempprinter = printers[0][2]
-print(tempprinter,"filename",filename)
-currentprinter = win32print.GetDefaultPrinter()
-win32print.SetDefaultPrinter(tempprinter)
-win32api.ShellExecute(0, 'open', 'gsprint.exe', '-printer '+tempprinter+' ' + filename, '.', 0)
-win32print.SetDefaultPrinter(currentprinter)
+# compiledKot= kotInstance.render(
+#     data=data
+# )
+# with open('temp_kot.html', 'w') as f:
+#     f.write(compiledKot)
+# date = datetime.datetime.now().strftime('%d-%m-%Y %H-%M-%S')
+# print(f'kots/temp_kot_{date}.pdf')
+# filename = f'kots/kot_{date}.pdf'
+# HTML(string=compiledKot).write_pdf(filename,
+#     stylesheets=[CSS(filename='style.css')])
+# printers = win32print.EnumPrinters(win32print.PRINTER_ENUM_LOCAL, None, 1)
+# tempprinter = printers[0][2]
+# print(tempprinter,"filename",filename)
+# currentprinter = win32print.GetDefaultPrinter()
+# win32print.SetDefaultPrinter(tempprinter)
+# win32api.ShellExecute(0, 'open', 'gsprint.exe', '-printer '+tempprinter+' ' + filename, '.', 0)
+# win32print.SetDefaultPrinter(currentprinter)
 
 @app.route('/')
 def checkServertatus():
