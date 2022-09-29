@@ -7,11 +7,14 @@ import datetime
 import jinja2
 import pdfkit
 import os
+from flask_cors import CORS
+import subprocess
 
 # os.add_dll_directory(r"C:\Program Files\GTK3-Runtime Win64\bin")
 from weasyprint import HTML, CSS
 version = '1.0.0'
 app = Flask(__name__)
+CORS(app)
 environment = jinja2.Environment()
 billTemplate = '''
 <div id="bill">
@@ -22,10 +25,9 @@ billTemplate = '''
     {% if currentBill['currentProject']['phoneNumber'] %}
         <h4 style="text-align: center">Phone: {{currentBill['currentProject']['phoneNumber']}}</h4>
     {% endif %}
-    <hr>
     {% if currentBill['isNonChargeable'] %}
     <hr>
-        <h3>COMPLIMENTARY BILL</h3>
+        <h3 style="text-align:center;">COMPLIMENTARY BILL</h3>
         <h3>{{currentBill['complimentaryName']}}</h3>
     <hr>
     {% endif %}
@@ -34,22 +36,22 @@ billTemplate = '''
         {% if currentBill['paymentMethod']=='dineIn' %}<h4>Dine In</h4> {% endif %}
         {% if currentBill['paymentMethod']=='pickUp' %}<h4>Pick Up</h4> {% endif %}
     <hr>
-    {% if gstNo %}
+    {% if currentBill['currentProject']['gstNo'] %}
         <div class="topFields">GST No.{{currentBill['currentProject']['gstNo']}}</div>
     {% endif %}
-    {% if fssaiNo %}
+    {% if currentBill['currentProject']['fssaiNo'] %}
         <div class="topFields">FSSAI No.{{currentBill['currentProject']['fssaiNo']}}</div>
     {% endif %}
-    {% if counterNo %}
+    {% if currentBill['currentProject']['counterNo'] %}
         <div class="topFields">Counter No.{{currentBill['currentProject']['counterNo']}}</div>
     {% endif %}
-    {% if cashierName %}
+    {% if currentBill['currentProject']['cashierName'] %}
         <div class="topFields">Cashier.{{currentBill['currentProject']['cashierName']}}</div>
     {% endif %}
-    {% if currentBill['deviceName'] %}
+    {% if currentBill['currentProject']['deviceName'] %}
         <div class="topFields">Device Name.{{currentBill['currentProject']['deviceName']}}</div>
     {% endif %}
-    <div class="topFields">{{currentBill['today']}}</div>
+    <div class="topFields">Date: {{currentBill['today']}}</div>
     <div class="topFields">Bill Id: {{currentBill['id']}}</div>
     <div class="topFields">KOTs: {{currentBill['kotsToken']}}</div>
     {% if currentBill['customerInfoForm']['fullName'] %}
@@ -63,15 +65,12 @@ billTemplate = '''
     <div class="row">
         <h4><b>Token No.:</b> {{currentBill['tokenNo']}}</h4>
         {% if currentBill['currentTable']['type']=='table' %}
-            <h4><b>Table No.:</b> {{currentBill['tableNo']}}</h4>
+            <h4><b>Table No.:</b> {{currentBill['currentTable']['tableNo']}}</h4>
         {% endif %}
         {% if currentBill['currentTable']['type']=='room' %}
-            <h4><b>Room No.:</b> {{currentBill['tableNo']}}</h4>
+            <h4><b>Room No.:</b> {{currentBill['currentTable']['tableNo']}}</h4>
         {% endif %}
     </div>
-    {% if isNonChargeable %}    
-        <h3>Non Chargeable</h3>
-    {% endif %}
     <table>
         <tr>
             <th>Product</th>
@@ -100,10 +99,10 @@ billTemplate = '''
             </tr>
             {% for discount in currentBill['selectDiscounts'] %}
             <tr>
-                <td>{{item.title}}</td>
-                <td>{{item.discountValue}}</td>
-                <td>{{item.discountType}}</td>
-                <td>{{item.appliedDiscountValue}}</td>
+                <td>{{discount.title}}</td>
+                <td>{{discount.discountValue}}</td>
+                <td>{{discount.discountType}}</td>
+                <td>{{discount.appliedDiscountValue}}</td>
             </tr>
             {% endfor %}
         </table>
@@ -130,14 +129,6 @@ billTemplate = '''
         <p>&#8377;{{currentBill['sgst']}}</p>
     </div>
     <hr>
-    <div class="total">
-        <p>Taxable Amount</p>
-        <p>&#8377;{{currentBill['taxableValue']}}</p>
-    </div>
-    <div class="total"> 
-        <p>Total Tax</p>
-        <p>&#8377;{{currentBill['totalTaxAmount']}}</p>
-    </div>
     <div class="total">
         <p>Grand Total</p>
         <p>&#8377;{{currentBill['grandTotal']}}</p>
@@ -337,10 +328,17 @@ def printBill():
         # print(printers)
         # tempprinter = printers[5][2]
         # print(tempprinter,"filename",filename)
-        currentprinter = win32print.GetDefaultPrinter()
-        win32print.SetDefaultPrinter(data['printer'])
-        print(win32api.ShellExecute(0, 'open', 'gsprint.exe' ,'-ghostscript -printer -all '+data['printer']+' ' + filename, '.', 0))
-        win32print.SetDefaultPrinter(currentprinter)
+        # currentprinter = win32print.GetDefaultPrinter()
+        # win32print.SetDefaultPrinter(data['printer'])
+        # import time
+        # time.sleep(4)
+        filename = os.path.abspath(filename)
+        print('FoxitReader.exe /t '+filename)
+        subprocess.call('FoxitReader.exe /t "'+filename+'" RP3160',creationflags=0x08000000)
+        # win32api.ShellExecute(0,'FoxitReader.exe','/t','')
+        # print('gsprint.exe' ,'-ghostscript -printer -all "'+data['printer']+'" ' + filename, '.')
+        # print(win32api.ShellExecute(0, 'open', 'gsprint.exe' ,'-ghostscript -printer -all '+data['printer']+' ' + filename, '.', 0))
+        # win32print.SetDefaultPrinter(currentprinter)
         return compiledKot
     except Exception as e:
         return {"status": 'error', "error": str(e)}
