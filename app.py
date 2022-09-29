@@ -1,3 +1,4 @@
+from urllib import response
 from flask import Flask, request, jsonify
 import win32printing
 import win32api
@@ -102,7 +103,7 @@ billTemplate = '''
                 <td>{{item.title}}</td>
                 <td>{{item.discountValue}}</td>
                 <td>{{item.discountType}}</td>
-                <td>{{discountValues[loop.index]}}</td>
+                <td>{{item.appliedDiscountValue}}</td>
             </tr>
             {% endfor %}
         </table>
@@ -325,21 +326,21 @@ def printBill():
         compiledKot= billInstance.render(
             currentBill=data
         )
-        # with open('temp_kot.html', 'w') as f:
-        #     f.write(compiledKot)
-        # date = datetime.datetime.now().strftime('%d-%m-%Y %H-%M-%S')
-        # print(f'kots/temp_kot_{date}.pdf')
-        # filename = f'kots/kot_{date}.pdf'
-        # HTML(string=compiledKot).write_pdf(filename,
-        #     stylesheets=[CSS(filename='style.css')])
+        with open('temp_kot.html', 'w') as f:
+            f.write(compiledKot)
+        date = datetime.datetime.now().strftime('%d-%m-%Y %H-%M-%S')
+        print(f'kots/temp_kot_{date}.pdf')
+        filename = f'kots/kot_{date}.pdf'
+        HTML(string=compiledKot).write_pdf(filename,
+            stylesheets=[CSS(filename='style.css')])
         # printers = win32print.EnumPrinters(win32print.PRINTER_ENUM_LOCAL, None, 1)
         # print(printers)
         # tempprinter = printers[5][2]
         # print(tempprinter,"filename",filename)
-        # currentprinter = win32print.GetDefaultPrinter()
-        # win32print.SetDefaultPrinter(tempprinter)
-        # print(win32api.ShellExecute(0, 'open', 'gsprint.exe' ,'-ghostscript -printer '+tempprinter+' ' + filename, '.', 0))
-        # win32print.SetDefaultPrinter(currentprinter)
+        currentprinter = win32print.GetDefaultPrinter()
+        win32print.SetDefaultPrinter(data['printer'])
+        print(win32api.ShellExecute(0, 'open', 'gsprint.exe' ,'-ghostscript -printer -all '+data['printer']+' ' + filename, '.', 0))
+        win32print.SetDefaultPrinter(currentprinter)
         return compiledKot
     except Exception as e:
         return {"status": 'error', "error": str(e)}
