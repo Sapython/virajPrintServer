@@ -92,6 +92,7 @@ billTemplate = '''
         <p class="info">Special Instructions: {{currentBill['specialInstructions']}}</p>
         <hr>
     {% endif %}
+    <hr>
     <div class="info">
         <p>Total Qty: {{currentBill['totalQuantity']}}</p>
         <p>Sub Total: &#8377;{{currentBill['taxableValue']}}</p>
@@ -130,8 +131,8 @@ billTemplate = '''
     <div class="total">
         <p>Total</p>
         <p>&#8377;{{currentBill['grandTotal']}}</p>
-    <p class="detail">*Net Total Inclusive of GST</p>
     </div>
+    <p class="detail">*Net Total Inclusive of GST</p>
     <hr>
     <p class="thanking">Thanks for visiting {{ currentBill['projectName'] }}</p>
     <p class="thanking">{{ currentBill['website'] }}</p>
@@ -310,9 +311,18 @@ def printBill():
     print(data)
     try:
         billInstance = environment.from_string(billTemplate)
-        compiledKot = billInstance.render(currentBill=data)
+        data['date'] = datetime.datetime.now().strftime("%m/%d/%Y")
+        data['time'] = datetime.datetime.now().strftime("%I:%M %p")
+        index = 0
+        for item in data['allProducts']:
+            data['allProducts'][index]['dishName'] = item['dishName'].capitalize()
+            index+=1
+        compiledKot= billInstance.render(
+            currentBill=data
+        )
         with open('temp_kot.html', 'w') as f:
             f.write(compiledKot)
+        date = datetime.datetime.now().strftime('%d-%m-%Y %H-%M-%S')
         date = datetime.datetime.now().strftime('%d-%m-%Y %H-%M-%S')
         print(f'kots/temp_kot_{date}.pdf')
         filename = f'kots/kot_{date}.pdf'
