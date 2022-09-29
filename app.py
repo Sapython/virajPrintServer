@@ -12,6 +12,7 @@ import subprocess
 
 # os.add_dll_directory(r"C:\Program Files\GTK3-Runtime Win64\bin")
 from weasyprint import HTML, CSS
+
 version = '1.0.0'
 app = Flask(__name__)
 CORS(app)
@@ -87,6 +88,25 @@ billTemplate = '''
             </tr>
         {% endfor %}
     </table>
+    {% if specialInstructions %}
+        <p class="info">Special Instructions: {{currentBill['specialInstructions']}}</p>
+        <hr>
+    {% endif %}
+    <div class="info">
+        <p>Total Qty: {{currentBill['totalQuantity']}}</p>
+        <p>Sub Total: &#8377;{{currentBill['taxableValue']}}</p>
+    </div>
+    <hr>
+    <div class="tax">
+        <p>CGST</p>
+        <p>%2.5</p>
+        <p>&#8377;{{currentBill['cgst']}}</p>
+    </div>
+    <div class="tax">
+        <p>SGST</p>
+        <p>%2.5</p>
+        <p>&#8377;{{currentBill['sgst']}}</p>
+    </div>
     {% if (currentBill['selectDiscounts']|length) > 0 %}
         <hr>
         <table>
@@ -107,31 +127,10 @@ billTemplate = '''
             {% endfor %}
         </table>
     {% endif %}
-    <hr>
-    {% if specialInstructions %}
-        <p class="info">Special Instructions: {{currentBill['specialInstructions']}}</p>
-        <hr>
-    {% endif %}
-    <div class="info">
-        <p>Total Qty: {{currentBill['totalQuantity']}}</p>
-        <p>Sub Total: &#8377;{{currentBill['taxableValue']}}</p>
-    </div>
-    <p class="detail">*Net Total Inclusive of GST</p>
-    <hr>
-    <div class="tax">
-        <p>CGST</p>
-        <p>%2.5</p>
-        <p>&#8377;{{currentBill['cgst']}}</p>
-    </div>
-    <div class="tax">
-        <p>SGST</p>
-        <p>%2.5</p>
-        <p>&#8377;{{currentBill['sgst']}}</p>
-    </div>
-    <hr>
     <div class="total">
-        <p>Grand Total</p>
+        <p>Total</p>
         <p>&#8377;{{currentBill['grandTotal']}}</p>
+    <p class="detail">*Net Total Inclusive of GST</p>
     </div>
     <hr>
     <p class="thanking">Thanks for visiting {{ currentBill['projectName'] }}</p>
@@ -191,7 +190,6 @@ htmlBody = f'''
 </body>
 '''
 
-
 data = {
     'hotelName': 'Hotel Name',
     'today': datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S'),
@@ -200,12 +198,10 @@ data = {
     'tokenNo': 'Token No',
     'tableNo': '2',
     'tableType': 'table',
-    'allProducts': [
-        {
-            'dishName': 'Dish Name',
-            'quantity': '2'
-        }
-    ],
+    'allProducts': [{
+        'dishName': 'Dish Name',
+        'quantity': '2'
+    }],
     'specialInstructions': 'Special Instructions'
 }
 
@@ -314,16 +310,14 @@ def printBill():
     print(data)
     try:
         billInstance = environment.from_string(billTemplate)
-        compiledKot= billInstance.render(
-            currentBill=data
-        )
+        compiledKot = billInstance.render(currentBill=data)
         with open('temp_kot.html', 'w') as f:
             f.write(compiledKot)
         date = datetime.datetime.now().strftime('%d-%m-%Y %H-%M-%S')
         print(f'kots/temp_kot_{date}.pdf')
         filename = f'kots/kot_{date}.pdf'
-        HTML(string=compiledKot).write_pdf(filename,
-            stylesheets=[CSS(filename='style.css')])
+        HTML(string=compiledKot).write_pdf(
+            filename, stylesheets=[CSS(filename='style.css')])
         # printers = win32print.EnumPrinters(win32print.PRINTER_ENUM_LOCAL, None, 1)
         # print(printers)
         # tempprinter = printers[5][2]
@@ -333,8 +327,9 @@ def printBill():
         # import time
         # time.sleep(4)
         filename = os.path.abspath(filename)
-        print('FoxitReader.exe /t '+filename)
-        subprocess.call('FoxitReader.exe /t "'+filename+'" RP3160',creationflags=0x08000000)
+        print('FoxitReader.exe /t ' + filename)
+        # subprocess.call('FoxitReader.exe /t "' + filename + '" RP3160',
+        #                 creationflags=0x08000000)
         # win32api.ShellExecute(0,'FoxitReader.exe','/t','')
         # print('gsprint.exe' ,'-ghostscript -printer -all "'+data['printer']+'" ' + filename, '.')
         # print(win32api.ShellExecute(0, 'open', 'gsprint.exe' ,'-ghostscript -printer -all '+data['printer']+' ' + filename, '.', 0))
