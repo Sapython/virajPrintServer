@@ -1,11 +1,7 @@
-from urllib import response
 from flask import Flask, request, jsonify
-import win32printing
-import win32api
 import win32print
 import datetime
 import jinja2
-import pdfkit
 import os
 from flask_cors import CORS
 import subprocess
@@ -38,7 +34,10 @@ billTemplate = '''
         {% if currentBill['paymentMethod']=='pickUp' %}<h4>Pick Up</h4> {% endif %}
     <hr>
     {% if currentBill['currentProject']['gstNo'] %}
-        <div class="topFields">GST No.{{currentBill['currentProject']['gstNo']}}</div>
+        <div class="row">
+            <div class="topFields">GST No.{{currentBill['currentProject']['gstNo']}}</div>
+            <div class="topFields">Date.{{currentBill['date']}}</div>
+        </div>
     {% endif %}
     {% if currentBill['currentProject']['fssaiNo'] %}
         <div class="topFields">FSSAI No.{{currentBill['currentProject']['fssaiNo']}}</div>
@@ -52,9 +51,10 @@ billTemplate = '''
     {% if currentBill['currentProject']['deviceName'] %}
         <div class="topFields">Device Name.{{currentBill['currentProject']['deviceName']}}</div>
     {% endif %}
-    <div class="topFields">Date: {{currentBill['today']}}</div>
-    <div class="topFields">Bill Id: {{currentBill['id']}}</div>
-    <div class="topFields">KOTs: {{currentBill['kotsToken']}}</div>
+    <div class="row">
+        <div class="topFields">Bill Id: {{currentBill['id']}}</div>
+        <div class="topFields">Time.{{currentBill['time']}}</div>
+    </div>
     {% if currentBill['customerInfoForm']['fullName'] %}
     <h4 style="text-align: start">Name:
         {{currentBill['customerInfoForm']['fullName']}}</h4>
@@ -64,7 +64,7 @@ billTemplate = '''
         {{currentBill['customerInfoForm']['phoneNumber']}}</h4>
     {% endif %}
     <div class="row">
-        <h4><b>Token No.:</b> {{currentBill['tokenNo']}}</h4>
+        <h4 class="kotTokens">KOTs: <span class="breakWord">{{currentBill['kotsToken']}}</span></h4>
         {% if currentBill['currentTable']['type']=='table' %}
             <h4><b>Table No.:</b> {{currentBill['currentTable']['tableNo']}}</h4>
         {% endif %}
@@ -83,8 +83,8 @@ billTemplate = '''
             <tr>
                 <td>{{product['dishName']}}</td>
                 <td>{{product['quantity']}}</td>
-                <td>&#8377;{{product['shopPrice']}}</td>
-                <td>&#8377;{{product['shopPrice'] * product['quantity']}}</td>
+                <td>{{product['shopPrice']}}</td>
+                <td>{{product['shopPrice'] * product['quantity']}}</td>
             </tr>
         {% endfor %}
     </table>
@@ -141,38 +141,41 @@ billTemplate = '''
 
 kotTemplate = '''
 <div id="billKot">
-    <h3 style="text-align: center">{{data['hotelName']}}</h3>
-    <h4 style="text-align: center">{{data['today']}}</h4>
-    <h4 style="text-align: center">Bill Id: {{data['billId']}}</h4>
-    {% if data['deskKot'] %} <h3>Order</h3> {% endif %}
-    {% if not data['deskKot'] %} <h3>KOT</h3> {% endif %}
-    {% if isNonChargeable %}
+    <h3 style="text-align: center">{{currentBill['currentProject']['projectName']}}</h3>
+    <h4 style="text-align: center">{{currentBill['date']}}</h4>
+    <h4 style="text-align: center">Bill Id: {{currentBill['id']}}</h4>
+    {% if currentBill['isNonChargeable'] %}
         <h3>Non Chargeable</h3>
     {% endif %}
+    {% if currentBill['cancelled'] %}
+        <h3>Cancelled</h3>
+    {% endif %}
     <div class="row">
-        <h4><b>Token No.:</b> {{data['tokenNo']}}</h4>
-        {% if data['tableType']=='table' %}
-            <h4><b>Table No.:</b> {{data['tableNo']}}</h4>
+        <p class="kotTokens">Token: <span class="breakWord">{{currentBill['tokenNo']}}</span></p>
+        {% if currentBill['currentTable']['type']=='table' %}
+            <p><b>Table No.:</b> {{currentBill['currentTable']['tableNo']}}</p>
         {% endif %}
-        {% if data['tableType']=='room' %}
-            <h4><b>Room No.:</b> {{data['tableNo']}}</h4>
+        {% if currentBill['currentTable']['type']=='room' %}
+            <p><b>Room No.:</b> {{currentBill['currentTable']['tableNo']}}</p>
         {% endif %}
     </div>
     <table>
         <tr>
             <th>Product</th>
+            <th>Ins.</th>
             <th>Qty</th>
         </tr>
-        {% for product in data['allProducts'] %}
+        {% for product in currentBill['allProducts'] %}
             <tr>
                 <td>{{product['dishName']}}</td>
+                <td class="ins">{{product['instruction']}}</td>
                 <td>{{product['quantity']}}</td>
             </tr>
         {% endfor %}
     </table>
     <hr>
     {% if specialInstructions %}
-        <p class="info">Special Instructions: {{data['specialInstructions']}}</p>
+        <p class="info">Special Instructions: {{currentBill['specialInstructions']}}</p>
     {% endif %}
 </div>
 '''
@@ -232,74 +235,30 @@ def printKot():
     date = datetime.datetime.now().strftime('%H:%M:%S - %d/%m/%Y')
     data = request.json
     # check for hotelName, hotelAddress, gstNo, fssaiNo, counterNo, billId, tokenNo, tableNo, specialInstructions, totalQty, taxes, taxableAmount, totalTax
-
-    if ((not data['hotelName']) or data['hotelName'] == ''):
-        return {"message": "Hotel Name is required", "code": False}
-    if ((not data['hotelAddress']) or data['hotelAddress'] == ''):
-        return {"message": "Hotel Address is required", "code": False}
-    if ((not data['gstNo']) or data['gstNo'] == ''):
-        return {"message": "GST No is required", "code": False}
-    if ((not data['fssaiNo']) or data['fssaiNo'] == ''):
-        return {"message": "FSSAI No is required", "code": False}
-    if ((not data['counterNo']) or data['counterNo'] == ''):
-        return {"message": "Counter No is required", "code": False}
-    if ((not data['billId']) or data['billId'] == ''):
-        return {"message": "Bill Id is required", "code": False}
-    if ((not data['tokenNo']) or data['tokenNo'] == ''):
-        return {"message": "Token No is required", "code": False}
-    if ((not data['tableNo']) or data['tableNo'] == ''):
-        return {"message": "Table No is required", "code": False}
-    if ((not data['billId']) or data['billId'] == ''):
-        return {"message": "Bill Id is required", "code": False}
-    if ((not data['deskKot']) or data['deskKot'] == ''):
-        return {"message": "Desk Kot is required", "code": False}
-    if ((not data['tableType']) or data['tableType'] == ''):
-        return {"message": "Table Type is required", "code": False}
-    if ((not data['specialInstructions'])
-            or data['specialInstructions'] == ''):
-        return {"message": "Special Instructions is required", "code": False}
-    if ((not data['totalQty']) or data['totalQty'] == ''):
-        return {"message": "Total Qty is required", "code": False}
-    if ((not data['taxes']) or data['taxes'] == ''):
-        return {"message": "Taxes is required", "code": False}
-    if ((not data['taxableAmount']) or data['taxableAmount'] == ''):
-        return {"message": "Taxable Amount is required", "code": False}
-    if ((not data['totalTax']) or data['totalTax'] == ''):
-        return {"message": "Total Tax is required", "code": False}
-    if ((not data['items']) or data['items'] == ''):
-        return {"message": "Items is required", "code": False}
-    if ((not data['printerName']) or data['printerName'] == ''):
-        return {"message": "Printer Name is required", "code": False}
-    if ((not data['kot']) or data['kot'] == ''):
-        return {"message": "KOT is required", "code": False}
-    if ((not data['kot']['kotNumber']) or data['kot']['kotNumber'] == ''):
-        return {"message": "KOT Number is required", "code": False}
-    if (not data['kot']['items'] or data['kot']['items'] == ''
-            or len(data['kot']['items']) == 0):
-        return {"message": "KOT Items are required", "code": False}
-    for item in data['kot']['items']:
-        if (not item):
-            return {"message": "KOT Items are required", "code": False}
-        if ((not item['itemName']) or item['itemName'] == ''):
-            return {"message": "Item Name is required", "code": False}
-        if ((not item['itemQty']) or item['itemQty'] == ''):
-            return {"message": "Item Qty is required", "code": False}
-        if ((not item['itemPrice']) or item['itemPrice'] == ''):
-            return {"message": "Item Price is required", "code": False}
-        if ((not item['itemTotal']) or item['itemTotal'] == ''):
-            return {"message": "Item Total is required", "code": False}
-
     print(data)
-    font = {
-        "height": 8,
-    }
     try:
-        with win32printing.Printer(data['printerName'],
-                                   'Bill - ' + date,
-                                   auto_page=True) as printer:
-            printer.text(data['hotelName'], font_config=font)
-
-        return {"status": 'success'}
+        billInstance = environment.from_string(kotTemplate)
+        data['date'] = datetime.datetime.now().strftime("%m/%d/%Y %I:%M %p")
+        index = 0
+        for item in data['allProducts']:
+            data['allProducts'][index]['dishName'] = item['dishName'].capitalize()
+            index+=1
+        compiledKot= billInstance.render(
+            currentBill=data
+        )
+        with open('temp_kot.html', 'w') as f:
+            f.write(compiledKot)
+        date = datetime.datetime.now().strftime('%d-%m-%Y %H-%M-%S')
+        date = datetime.datetime.now().strftime('%d-%m-%Y %H-%M-%S')
+        print(f'kots/kot_{date}.pdf')
+        filename = f'kots/kot_{date}.pdf'
+        HTML(string=compiledKot).write_pdf(
+            filename, stylesheets=[CSS(filename='style.css')])
+        filename = os.path.abspath(filename)
+        print('FoxitReader.exe /t ' + filename,data['printer'])
+        subprocess.call('FoxitReader.exe /t "' + filename + '" '+data['printer'],
+                        creationflags=0x08000000)
+        return compiledKot
     except Exception as e:
         return {"status": 'error', "error": str(e)}
 
@@ -320,30 +279,18 @@ def printBill():
         compiledKot= billInstance.render(
             currentBill=data
         )
-        with open('temp_kot.html', 'w') as f:
+        with open('temp_bill.html', 'w') as f:
             f.write(compiledKot)
         date = datetime.datetime.now().strftime('%d-%m-%Y %H-%M-%S')
         date = datetime.datetime.now().strftime('%d-%m-%Y %H-%M-%S')
-        print(f'kots/temp_kot_{date}.pdf')
-        filename = f'kots/kot_{date}.pdf'
+        print(f'kots/bill_{date}.pdf')
+        filename = f'bills/bill_{date}.pdf'
         HTML(string=compiledKot).write_pdf(
             filename, stylesheets=[CSS(filename='style.css')])
-        # printers = win32print.EnumPrinters(win32print.PRINTER_ENUM_LOCAL, None, 1)
-        # print(printers)
-        # tempprinter = printers[5][2]
-        # print(tempprinter,"filename",filename)
-        # currentprinter = win32print.GetDefaultPrinter()
-        # win32print.SetDefaultPrinter(data['printer'])
-        # import time
-        # time.sleep(4)
         filename = os.path.abspath(filename)
         print('FoxitReader.exe /t ' + filename)
-        # subprocess.call('FoxitReader.exe /t "' + filename + '" RP3160',
-        #                 creationflags=0x08000000)
-        # win32api.ShellExecute(0,'FoxitReader.exe','/t','')
-        # print('gsprint.exe' ,'-ghostscript -printer -all "'+data['printer']+'" ' + filename, '.')
-        # print(win32api.ShellExecute(0, 'open', 'gsprint.exe' ,'-ghostscript -printer -all '+data['printer']+' ' + filename, '.', 0))
-        # win32print.SetDefaultPrinter(currentprinter)
+        subprocess.call('FoxitReader.exe /t "' + filename + '" '+data['printerName'],
+                        creationflags=0x08000000)
         return compiledKot
     except Exception as e:
         return {"status": 'error', "error": str(e)}
