@@ -24,14 +24,14 @@ billTemplate = '''
     {% endif %}
     {% if currentBill['isNonChargeable'] %}
     <hr>
-        <h3 style="text-align:center;">COMPLIMENTARY BILL</h3>
-        <h3>{{currentBill['complimentaryName']}}</h3>
+        <h4 style="text-align:center;">COMPLIMENTARY BILL</h4>
+        <h5>{{currentBill['complimentaryName']}}</h5>
     <hr>
     {% endif %}
-        {% if currentBill['paymentMethod']=='cash' %}<h4>Paid With Cash</h4> {% endif %}
-        {% if currentBill['paymentMethod']=='card' %}<h4>Paid With Card</h4> {% endif %}
-        {% if currentBill['paymentMethod']=='dineIn' %}<h4>Dine In</h4> {% endif %}
-        {% if currentBill['paymentMethod']=='pickUp' %}<h4>Pick Up</h4> {% endif %}
+        {% if currentBill['paymentMethod']=='cash' %}<div class="topFields">Paid With Cash</div> {% endif %}
+        {% if currentBill['paymentMethod']=='card' %}<div class="topFields">Paid With Card</div> {% endif %}
+        {% if currentBill['paymentMethod']=='dineIn' %}<div class="topFields">Dine In</div> {% endif %}
+        {% if currentBill['paymentMethod']=='pickUp' %}<div class="topFields">Pick Up</div> {% endif %}
     <hr>
     {% if currentBill['currentProject']['gstNo'] %}
         <div class="row">
@@ -97,7 +97,18 @@ billTemplate = '''
         <p>Total Qty: {{currentBill['totalQuantity']}}</p>
         <p>Sub Total: &#8377;{{currentBill['taxableValue']}}</p>
     </div>
-    <hr>
+    {% if (currentBill['selectDiscounts']|length) > 0 %}
+        <hr>
+        <p>Discounts</p>
+        {% for discount in currentBill['selectDiscounts'] %}
+            <div class="tax">
+                <p>{{discount['title']}}</p>
+                <p>{{discount['discountValue']}}</p>
+                <p>{{discount['appliedDiscountValue']}}</p>
+            </div>
+        {% endfor %}
+    {% endif %}
+    <p>Taxes</p>
     <div class="tax">
         <p>CGST</p>
         <p>%2.5</p>
@@ -108,26 +119,7 @@ billTemplate = '''
         <p>%2.5</p>
         <p>&#8377;{{currentBill['sgst']}}</p>
     </div>
-    {% if (currentBill['selectDiscounts']|length) > 0 %}
-        <hr>
-        <table>
-            <h3>Discounts</h3>
-            <tr>
-                <th>Name</th>
-                <th>Amount</th>
-                <th>Type</th>
-                <th>Final</th>
-            </tr>
-            {% for discount in currentBill['selectDiscounts'] %}
-            <tr>
-                <td>{{discount.title}}</td>
-                <td>{{discount.discountValue}}</td>
-                <td>{{discount.discountType}}</td>
-                <td>{{discount.appliedDiscountValue}}</td>
-            </tr>
-            {% endfor %}
-        </table>
-    {% endif %}
+    <hr>
     <div class="total">
         <p>Total</p>
         <p>&#8377;{{currentBill['grandTotal']}}</p>
@@ -289,7 +281,7 @@ def printBill():
             filename, stylesheets=[CSS(filename='style.css')])
         filename = os.path.abspath(filename)
         print('FoxitReader.exe /t ' + filename)
-        subprocess.call('FoxitReader.exe /t "' + filename + '" '+data['printerName'],
+        subprocess.call('FoxitReader.exe /t "' + filename + '" '+data['printer'],
                         creationflags=0x08000000)
         return compiledKot
     except Exception as e:
