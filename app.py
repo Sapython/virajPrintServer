@@ -6,9 +6,6 @@ import os
 from flask_cors import CORS
 import subprocess
 
-# os.add_dll_directory(r"C:\Program Files\GTK3-Runtime Win64\bin")
-from weasyprint import HTML, CSS
-
 version = '1.0.0'
 app = Flask(__name__)
 CORS(app)
@@ -208,7 +205,6 @@ data = {
 def checkServertatus():
     return f'Hello from Viraj servers. This is ' + version
 
-
 @app.route('/getPrinters')
 def getPrinters():
     printers = win32print.EnumPrinters(win32print.PRINTER_ENUM_LOCAL, None, 1)
@@ -222,7 +218,6 @@ def getPrinters():
         "code": True,
         "printers": printersList
     }
-
 
 @app.route('/printKot', methods=['POST'])
 def printKot():
@@ -246,7 +241,10 @@ def printKot():
         date = datetime.datetime.now().strftime('%d-%m-%Y %H-%M-%S')
         print(f'kots/kot_{date}.pdf')
         filename = f'kots/kot_{date}.pdf'
-        
+        try:
+            output = subprocess.check_output('wkhtmltopdf temp_kot.html "' + filename+'"',creationflags=0x08000000,stderr=subprocess.STDOUT, shell=True, timeout=3,universal_newlines=True)
+        except subprocess.CalledProcessError as e:
+            print(e)
         filename = os.path.abspath(filename)
         print('FoxitReader.exe /t ' + filename,data['printer'])
         subprocess.call('FoxitReader.exe /t "' + filename + '" '+data['printer'],
@@ -254,7 +252,6 @@ def printKot():
         return compiledKot
     except Exception as e:
         return {"status": 'error', "error": str(e)}
-
 
 @app.route('/printBill', methods=['POST'])
 def printBill():
@@ -292,7 +289,6 @@ def printBill():
         return compiledKot
     except Exception as e:
         return {"status": 'error', "error": str(e)}
-
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8080, debug=True)
