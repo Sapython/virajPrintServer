@@ -1,17 +1,288 @@
 
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Bill</title>
+        <style>
+            @font-face {
+  font-family: 'Bill';
+  src: url('assets/fonts/Space_Mono/SpaceMono-Regular.ttf') format('truetype');
+}
+
+
+#bill,
+#billKot,
+#cancelledBillKot,
+#reprintBillKot,
+#reprintBill {
+  /* visibility: hidden; */
+  font-family: "Bill" !important;
+}
+*{
+  font-family: "Bill" !important;
+  font-weight: 400;
+}
+@page {
+  size: 72mm 297mm;
+  margin: 0.1cm;
+}
+body {
+  width: 72mm;
+  visibility: hidden;
+  margin: 0% !important;
+  padding: 0% !important;
+}
+body #productsContainer .productCard {
+  visibility: hidden;
+  display: none;
+}
+body header * {
+  visibility: hidden;
+  display: none;
+}
+body header #searchBar {
+  visibility: hidden !important;
+  display: none !important;
+}
+body .ri-arrow-right-s-line,
+body .ri-arrow-down-s-fill,
+body .ri-arrow-up-s-fill {
+  visibility: hidden;
+  display: none;
+}
+#bill,
+#billKot,
+#cancelledBillKot,
+#reprintBillKot,
+#reprintBill {
+  padding: 0% !important;
+  margin: 0% !important;
+  visibility: visible !important;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 72mm;
+  box-shadow: none;
+  font-size: 14px;
+  overflow-x: visible;
+}
+#bill *,
+#billKot *,
+#cancelledBillKot *,
+#reprintBillKot *,
+#reprintBill * {
+  overflow-x: visible;
+  font-family: var(--primary-font) !important;
+  margin: 3px !important;
+}
+#bill h3,
+#billKot h3,
+#cancelledBillKot h3,
+#reprintBillKot h3,
+#reprintBill h3 {
+  font-size: 18px !important;
+}
+#bill h4,
+#billKot h4,
+#cancelledBillKot h4,
+#reprintBillKot h4,
+#reprintBill h4 {
+  font-size: 14px !important;
+}
+#bill .topFields,
+#billKot .topFields,
+#cancelledBillKot .topFields,
+#reprintBillKot .topFields,
+#reprintBill .topFields {
+  font-size: 10px !important;
+  text-align: start;
+  padding-left: 10px;
+}
+#bill img,
+#billKot img,
+#cancelledBillKot img,
+#reprintBillKot img,
+#reprintBill img {
+  position: relative;
+  top: 0;
+  margin: 30px;
+  height: 200px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+#bill table,
+#billKot table,
+#cancelledBillKot table,
+#reprintBillKot table,
+#reprintBill table {
+  border-top: 2px solid black;
+  position: relative;
+  width:65mm;
+}
+#bill table tr th,
+#billKot table tr th,
+#cancelledBillKot table tr th,
+#reprintBillKot table tr th,
+#reprintBill table tr th {
+  font-size: 18px;
+  /* width:72mm; */
+  padding: 0px;
+  border-bottom: 2px solid black;
+}
+#bill table tr tr,
+#billKot table tr tr,
+#cancelledBillKot table tr tr,
+#reprintBillKot table tr tr,
+#reprintBill table tr tr {
+  border-bottom: 2px solid black;
+}
+#bill table tr th,
+#billKot table tr th,
+#cancelledBillKot table tr th,
+#reprintBillKot table tr th,
+#reprintBill table tr th,
+#bill table tr td,
+#billKot table tr td,
+#cancelledBillKot table tr td,
+#reprintBillKot table tr td,
+#reprintBill table tr td {
+  text-align: center;
+  font-size: 14px !important;
+}
+#bill table tr td:nth-child(1),
+#billKot table tr td:nth-child(1),
+#cancelledBillKot table tr td:nth-child(1),
+#reprintBillKot table tr td:nth-child(1),
+#reprintBill table tr td:nth-child(1) {
+  text-align: start;
+}
+#bill hr,
+#billKot hr,
+#cancelledBillKot hr,
+#reprintBillKot hr,
+#reprintBill hr {
+  border-bottom: 2px solid black;
+  height: 0px;
+  padding: 0px;
+}
+#bill .row,
+#billKot .row,
+#cancelledBillKot .row,
+#reprintBillKot .row,
+#reprintBill .row {
+  display: flex;
+  justify-content: space-between;
+  /* width: 72mm; */
+}
+#bill .topFields,
+#billKot .topFields,
+#cancelledBillKot .topFields,
+#reprintBillKot .topFields,
+#reprintBill .topFields{
+  flex: 1;
+  word-wrap: break-word;
+}
+#bill .topFields:nth-child(1),
+#billKot .topFields:nth-child(1),
+#cancelledBillKot .topFields:nth-child(1),
+#reprintBillKot .topFields:nth-child(1),
+#reprintBill .topFields:nth-child(1){
+  flex: 2;
+  word-wrap: break-word;
+}
+#bill .row h4,
+#billKot .row h4,
+#cancelledBillKot .row h4,
+#reprintBillKot .row h4,
+#reprintBill .row h4 {
+  width: fit-content;
+}
+#bill .info,
+#billKot .info,
+#cancelledBillKot .info,
+#reprintBillKot .info,
+#reprintBill .info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+}
+#bill .detail,
+#billKot .detail,
+#cancelledBillKot .detail,
+#reprintBillKot .detail,
+#reprintBill .detail {
+  font-size: 12px;
+}
+#bill .tax,
+#billKot .tax,
+#cancelledBillKot .tax,
+#reprintBillKot .tax,
+#reprintBill .tax {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  margin-bottom: -5px;
+}
+#bill .tax p,
+#billKot .tax p,
+#cancelledBillKot .tax p,
+#reprintBillKot .tax p,
+#reprintBill .tax p {
+  margin-bottom: -5px;
+  padding: 0px;
+  font-size: 11px;
+}
+#bill .total,
+#billKot .total,
+#cancelledBillKot .total,
+#reprintBillKot .total,
+#reprintBill .total {
+  font-size: 19px;
+  font-weight: bold;
+  display: flex;
+  /* width:72mm; */
+  justify-content: space-between;
+  align-items: center;
+  padding-right: 20px;
+  font-family: 'Bill' !important;
+}
+#bill p.thanking,
+#billKot p.thanking,
+#cancelledBillKot p.thanking,
+#reprintBillKot p.thanking,
+#reprintBill p.thanking {
+  font-size: 18px;
+  text-align: center;
+}
+.kotTokens{
+  font-size: 12px;
+}
+td{
+  font-weight: bold;
+}
+.ins{
+  /* font-size: 12px; */
+  font-weight: 200;
+  font-family: Arial !important;
+  text-decoration: underline;
+}
+.breakWord{
+  word-wrap: break-word;
+}
+
+
+        </style>
+    </head>
+    <body>
+    
 <div id="bill">
-    <h3 style="text-align: center;font-style:bold;">Test</h3>
-    
-        <h4 style="text-align: center"> 367 Ketka Jhunsi Prayagraj - 211103 </h4>
+    <h3 style="text-align: center;font-style:bold;">Mahajans Gadda</h3>
     
     
-        <h4 style="text-align: center">Phone: 8874606666</h4>
-    
-    
-    <hr>
-        <h4 style="text-align:center;">COMPLIMENTARY BILL</h4>
-        <h5>Kumar Saptam</h5>
-    <hr>
     
         <div class="topFields">Paid With Cash</div> 
         
@@ -19,28 +290,21 @@
         
     <hr>
     
-        <div class="row">
-            <div class="topFields">GST No.09BSPK3362B2ZK</div>
-            <div class="topFields">Date.09/30/2022</div>
-        </div>
-    
-    
-        <div class="topFields">FSSAI No.12721005000334</div>
     
     
     
     
     <div class="row">
-        <div class="topFields">Bill Id: 3894729384782782</div>
-        <div class="topFields">Time.11:11 AM</div>
+        <div class="topFields">Bill Id: 15292146472187606</div>
+        <div class="topFields">Time.08:45 PM</div>
     </div>
     
     
     <div class="row">
-        <h4 class="kotTokens">KOTs: <span class="breakWord">234,235,238</span></h4>
+        <h4 class="kotTokens">KOTs: <span class="breakWord">68,69,70</span></h4>
         
+            <h4><b>Table No.:</b> 4</h4>
         
-            <h4><b>Room No.:</b> 203</h4>
         
     </div>
     <table>
@@ -52,75 +316,54 @@
         </tr>
         
             <tr>
-                <td>Test</td>
-                <td>32</td>
-                <td>343</td>
-                <td>10976</td>
+                <td>Chilly garlic noodles</td>
+                <td>2</td>
+                <td>255</td>
+                <td>255255</td>
             </tr>
         
             <tr>
-                <td>Test</td>
-                <td>32</td>
-                <td>343</td>
-                <td>10976</td>
+                <td>Paneer schezwan noodles</td>
+                <td>3</td>
+                <td>270</td>
+                <td>810</td>
             </tr>
         
             <tr>
-                <td>Test</td>
-                <td>32</td>
-                <td>343</td>
-                <td>10976</td>
-            </tr>
-        
-            <tr>
-                <td>Test</td>
-                <td>32</td>
-                <td>343</td>
-                <td>10976</td>
+                <td>Paneer schezwan noodles</td>
+                <td>1</td>
+                <td>270</td>
+                <td>270</td>
             </tr>
         
     </table>
     
     <hr>
     <div class="info">
-        <p>Total Qty: 4</p>
-        <p>Sub Total: &#8377;886</p>
+        <p>Total Qty: 2</p>
+        <p>Sub Total: &#8377;540</p>
     </div>
     
-        <hr>
-        <p>Discounts</p>
-        
-            <div class="tax">
-                <p>10% Discount</p>
-                <p>10</p>
-                <p>320</p>
-            </div>
-        
-            <div class="tax">
-                <p>10% Discount</p>
-                <p>10</p>
-                <p>320</p>
-            </div>
-        
-    
-    <p>Taxes</p>
     <div class="tax">
         <p>CGST</p>
         <p>%2.5</p>
-        <p>&#8377;34</p>
+        <p>&#8377;13.5</p>
     </div>
     <div class="tax">
         <p>SGST</p>
         <p>%2.5</p>
-        <p>&#8377;34</p>
+        <p>&#8377;13.5</p>
     </div>
     <hr>
     <div class="total">
         <p>Total</p>
-        <p>&#8377;788</p>
+        <p>&#8377;567</p>
     </div>
     <p class="detail">*Net Total Inclusive of GST</p>
     <hr>
     <p class="thanking">Thanks for visiting </p>
     <p class="thanking"></p>
 </div>
+
+    </body>
+    

@@ -99,7 +99,6 @@ billTemplate = '''
     </div>
     {% if (currentBill['selectDiscounts']|length) > 0 %}
         <hr>
-        <p>Discounts</p>
         {% for discount in currentBill['selectDiscounts'] %}
             <div class="tax">
                 <p>{{discount['title']}}</p>
@@ -108,7 +107,6 @@ billTemplate = '''
             </div>
         {% endfor %}
     {% endif %}
-    <p>Taxes</p>
     <div class="tax">
         <p>CGST</p>
         <p>%2.5</p>
@@ -172,19 +170,23 @@ kotTemplate = '''
 </div>
 '''
 
-htmlBody = f'''
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bill</title>
-    <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-{kotTemplate}
-</body>
-'''
+def getHtmlBody(data):
+    stylePath = os.path.abspath('style.css')
+    return f'''
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Bill</title>
+        <style>
+            {open(stylePath, 'r').read()}
+        </style>
+    </head>
+    <body>
+    {data}
+    </body>
+    '''
 
 data = {
     'hotelName': 'Hotel Name',
@@ -244,8 +246,7 @@ def printKot():
         date = datetime.datetime.now().strftime('%d-%m-%Y %H-%M-%S')
         print(f'kots/kot_{date}.pdf')
         filename = f'kots/kot_{date}.pdf'
-        HTML(string=compiledKot).write_pdf(
-            filename, stylesheets=[CSS(filename='style.css')])
+        
         filename = os.path.abspath(filename)
         print('FoxitReader.exe /t ' + filename,data['printer'])
         subprocess.call('FoxitReader.exe /t "' + filename + '" '+data['printer'],
@@ -261,7 +262,7 @@ def printBill():
     data = request.json
     print(data)
     try:
-        billInstance = environment.from_string(billTemplate)
+        billInstance = environment.from_string(getHtmlBody(billTemplate))
         data['date'] = datetime.datetime.now().strftime("%m/%d/%Y")
         data['time'] = datetime.datetime.now().strftime("%I:%M %p")
         index = 0
@@ -277,8 +278,13 @@ def printBill():
         date = datetime.datetime.now().strftime('%d-%m-%Y %H-%M-%S')
         print(f'kots/bill_{date}.pdf')
         filename = f'bills/bill_{date}.pdf'
-        HTML(string=compiledKot).write_pdf(
-            filename, stylesheets=[CSS(filename='style.css')])
+        # HTML(string=compiledKot).write_pdf(
+        #     filename, stylesheets=[CSS(filename='style.css')])
+        try:
+            output = subprocess.check_output('wkhtmltopdf temp_bill.html "' + filename+'"',creationflags=0x08000000,stderr=subprocess.STDOUT, shell=True, timeout=3,universal_newlines=True)
+        except subprocess.CalledProcessError as e:
+            print(e)
+        print("Output",output)
         filename = os.path.abspath(filename)
         print('FoxitReader.exe /t ' + filename)
         subprocess.call('FoxitReader.exe /t "' + filename + '" '+data['printer'],
