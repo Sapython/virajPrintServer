@@ -5,6 +5,7 @@ import jinja2
 import os
 from flask_cors import CORS
 import subprocess
+from weasyprint import HTML, CSS
 
 version = '1.0.0'
 app = Flask(__name__)
@@ -49,8 +50,8 @@ billTemplate = '''
         <div class="topFields">Device Name.{{currentBill['currentProject']['deviceName']}}</div>
     {% endif %}
     <div class="row">
-        <div class="topFields">Bill Id: {{currentBill['id']}}</div>
-        <div class="topFields">Time.{{currentBill['time']}}</div>
+        <div class="topFields">Bill No: {{currentBill['billNo']}}</div>
+        <div class="topFields">Time:{{currentBill['time']}}</div>
     </div>
     {% if currentBill['customerInfoForm']['fullName'] %}
     <h4 style="text-align: start">Name:
@@ -146,6 +147,23 @@ kotTemplate = '''
             <p><b>Room No.:</b> {{currentBill['currentTable']['tableNo']}}</p>
         {% endif %}
     </div>
+    {% if currentBill['cancelled'] %}
+    <table>
+        <tr>
+            <th>Product</th>
+            <th>Ins.</th>
+            <th>Qty</th>
+        </tr>
+        {% for product in currentBill['allProducts'] %}
+            <tr>
+                <td><del>{{product['dishName']}}</del></td>
+                <td class="ins"><del>{{product['instruction']}}</del></td>
+                <td><del>{{product['quantity']}}</del></td>
+            </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+    {% if not currentBill['cancelled'] %}
     <table>
         <tr>
             <th>Product</th>
@@ -160,6 +178,7 @@ kotTemplate = '''
             </tr>
         {% endfor %}
     </table>
+    {% endif %}
     <hr>
     {% if specialInstructions %}
         <p class="info">Special Instructions: {{currentBill['specialInstructions']}}</p>
@@ -173,8 +192,8 @@ def getHtmlBody(data):
     <!DOCTYPE html>
     <html>
     <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <title>Bill</title>
         <style>
             {open(stylePath, 'r').read()}
@@ -241,10 +260,12 @@ def printKot():
         date = datetime.datetime.now().strftime('%d-%m-%Y %H-%M-%S')
         print(f'kots/kot_{date}.pdf')
         filename = f'kots/kot_{date}.pdf'
-        try:
-            output = subprocess.check_output('wkhtmltopdf temp_kot.html "' + filename+'"',creationflags=0x08000000,stderr=subprocess.STDOUT, shell=True, timeout=3,universal_newlines=True)
-        except subprocess.CalledProcessError as e:
-            print(e)
+        HTML(string=compiledKot).write_pdf(
+            filename, stylesheets=[CSS(filename='style.css')])
+        # try:
+        #     output = subprocess.check_output('wkhtmltopdf temp_kot.html "' + filename+'"',creationflags=0x08000000,stderr=subprocess.STDOUT, shell=True, timeout=3,universal_newlines=True)
+        # except subprocess.CalledProcessError as e:
+        #     print(e)
         filename = os.path.abspath(filename)
         print('FoxitReader.exe /t ' + filename,data['printer'])
         subprocess.call('FoxitReader.exe /t "' + filename + '" '+data['printer'],
@@ -275,13 +296,13 @@ def printBill():
         date = datetime.datetime.now().strftime('%d-%m-%Y %H-%M-%S')
         print(f'kots/bill_{date}.pdf')
         filename = f'bills/bill_{date}.pdf'
-        # HTML(string=compiledKot).write_pdf(
-        #     filename, stylesheets=[CSS(filename='style.css')])
-        try:
-            output = subprocess.check_output('wkhtmltopdf temp_bill.html "' + filename+'"',creationflags=0x08000000,stderr=subprocess.STDOUT, shell=True, timeout=3,universal_newlines=True)
-        except subprocess.CalledProcessError as e:
-            print(e)
-        print("Output",output)
+        HTML(string=compiledKot).write_pdf(
+            filename, stylesheets=[CSS(filename='style.css')])
+        # try:
+        #     output = subprocess.check_output('wkhtmltopdf temp_bill.html "' + filename+'"',creationflags=0x08000000,stderr=subprocess.STDOUT, shell=True, timeout=3,universal_newlines=True)
+        # except subprocess.CalledProcessError as e:
+        #     print(e)
+        # print("Output",output)
         filename = os.path.abspath(filename)
         print('FoxitReader.exe /t ' + filename)
         subprocess.call('FoxitReader.exe /t "' + filename + '" '+data['printer'],
