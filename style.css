@@ -141,7 +141,8 @@ body .ri-arrow-up-s-fill {
 #reprintBillKot table tr td,
 #reprintBill table tr td {
   text-align: center;
-  font-size: 14px !important;
+  font-size: 13px !important;
+  font-family: 'Bill' !important;
 }
 #bill table tr td:nth-child(1),
 #billKot table tr td:nth-child(1),

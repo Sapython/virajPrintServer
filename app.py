@@ -1,3 +1,4 @@
+import json
 from flask import Flask, request, jsonify
 import win32print
 import datetime
@@ -31,9 +32,9 @@ billTemplate = '''
         {% if currentBill['paymentMethod']=='dineIn' %}<div class="topFields">Dine In</div> {% endif %}
         {% if currentBill['paymentMethod']=='pickUp' %}<div class="topFields">Pick Up</div> {% endif %}
     <hr>
-    {% if currentBill['currentProject']['gstNo'] %}
+    {% if currentBill['currentProject']['gstNumber'] %}
         <div class="row">
-            <div class="topFields">GST No.{{currentBill['currentProject']['gstNo']}}</div>
+            <div class="topFields">GST No.{{currentBill['currentProject']['gstNumber']}}</div>
             <div class="topFields">Date.{{currentBill['date']}}</div>
         </div>
     {% endif %}
@@ -122,6 +123,13 @@ billTemplate = '''
     </div>
     <p class="detail">*Net Total Inclusive of GST</p>
     <hr>
+    {% if currentBill['customerInfoForm'] %}
+        {% if currentBill['customerInfoForm']['name'] %} <p>Name: {{currentBill['customerInfoForm']['name']}}</p> {% endif %}
+        {% if currentBill['customerInfoForm']['email'] %} <p>Mail: {{currentBill['customerInfoForm']['email']}}</p> {% endif %}
+        {% if currentBill['customerInfoForm']['phone'] %} <p>Ph: {{currentBill['customerInfoForm']['phone']}}</p> {% endif %}
+        {% if currentBill['customerInfoForm']['address'] %} <p>Add: {{currentBill['customerInfoForm']['address']}}</p> {% endif %}
+    {% endif %}
+    <hr>
     <p class="thanking">Thanks for visiting {{ currentBill['projectName'] }}</p>
     <p class="thanking">{{ currentBill['website'] }}</p>
 </div>
@@ -131,12 +139,15 @@ kotTemplate = '''
 <div id="billKot">
     <h3 style="text-align: center">{{currentBill['currentProject']['projectName']}}</h3>
     <h4 style="text-align: center">{{currentBill['date']}}</h4>
-    <h4 style="text-align: center">Bill Id: {{currentBill['id']}}</h4>
+    <h4 style="text-align: center">Bill Id: {{currentBill['billNo']}}</h4>
     {% if currentBill['isNonChargeable'] %}
         <h3>Non Chargeable</h3>
     {% endif %}
     {% if currentBill['cancelled'] %}
         <h3>Cancelled</h3>
+    {% endif %}
+    {% if currentBill['mode']=='edited' %}
+        <h3>Modified</h3>
     {% endif %}
     <div class="row">
         <p class="kotTokens">Token: <span class="breakWord">{{currentBill['tokenNo']}}</span></p>
@@ -175,6 +186,13 @@ kotTemplate = '''
                 <td>{{product['dishName']}}</td>
                 <td class="ins">{{product['instruction']}}</td>
                 <td>{{product['quantity']}}</td>
+            </tr>
+        {% endfor %}
+        {% for product in currentBill['deleted'] %}
+            <tr>
+                <td><del>{{product['dishName']}}</del></td>
+                <td class="ins"><del>{{product['instruction']}}</del></td>
+                <td><del>{{product['quantity']}}</del></td>
             </tr>
         {% endfor %}
     </table>
@@ -270,9 +288,11 @@ def printKot():
         print('FoxitReader.exe /t ' + filename,data['printer'])
         subprocess.call('FoxitReader.exe /t "' + filename + '" '+data['printer'],
                         creationflags=0x08000000)
-        return compiledKot
+        subprocess.call('FoxitReader.exe /t "' + filename + '" '+data['printer'],
+                        creationflags=0x08000000)
+        return jsonify({"status": 'success'}), 200
     except Exception as e:
-        return {"status": 'error', "error": str(e)}
+        return jsonify({"status": 'error', "error": str(e)}), 400
 
 @app.route('/printBill', methods=['POST'])
 def printBill():
@@ -298,18 +318,22 @@ def printBill():
         filename = f'bills/bill_{date}.pdf'
         HTML(string=compiledKot).write_pdf(
             filename, stylesheets=[CSS(filename='style.css')])
+        HTML(string=compiledKot).write_pdf(
+            filename, stylesheets=[CSS(filename='style.css')])
         # try:
         #     output = subprocess.check_output('wkhtmltopdf temp_bill.html "' + filename+'"',creationflags=0x08000000,stderr=subprocess.STDOUT, shell=True, timeout=3,universal_newlines=True)
         # except subprocess.CalledProcessError as e:
-        #     print(e)
+            # print(e)
         # print("Output",output)
         filename = os.path.abspath(filename)
         print('FoxitReader.exe /t ' + filename)
         subprocess.call('FoxitReader.exe /t "' + filename + '" '+data['printer'],
                         creationflags=0x08000000)
-        return compiledKot
+        subprocess.call('FoxitReader.exe /t "' + filename + '" '+data['printer'],
+                        creationflags=0x08000000)
+        return jsonify({"status": 'success'}), 200
     except Exception as e:
-        return {"status": 'error', "error": str(e)}
+        return jsonify({"status": 'error', "error": str(e)}), 400
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8080, debug=True)
