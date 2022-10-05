@@ -1,6 +1,6 @@
 @font-face {
-  font-family: 'Bill';
-  src: url('assets/fonts/Space_Mono/SpaceMono-Regular.ttf') format('truetype');
+  font-family: 'IBM Plex Mono', monospace;
+  src: local('%/font/%') format('truetype');
 }
 
 
@@ -10,18 +10,17 @@
 #reprintBillKot,
 #reprintBill {
   /* visibility: hidden; */
-  font-family: "Bill" !important;
+  font-family: 'IBM Plex Mono', monospace;
 }
 *{
-  font-family: "Bill" !important;
+  font-family: 'IBM Plex Mono', monospace;
   font-weight: 400;
 }
 @page {
-  size: 72mm 297mm;
+  size: 85mm 297mm;
   margin: 0.1cm;
 }
 body {
-  width: 72mm;
   visibility: hidden;
   margin: 0% !important;
   padding: 0% !important;
@@ -66,7 +65,6 @@ body .ri-arrow-up-s-fill {
 #reprintBillKot *,
 #reprintBill * {
   overflow-x: visible;
-  font-family: var(--primary-font) !important;
   margin: 3px !important;
 }
 #bill h3,
@@ -142,7 +140,7 @@ body .ri-arrow-up-s-fill {
 #reprintBill table tr td {
   text-align: center;
   font-size: 13px !important;
-  font-family: 'Bill' !important;
+  font-family: 'IBM Plex Mono', monospace;
 }
 #bill table tr td:nth-child(1),
 #billKot table tr td:nth-child(1),
@@ -241,7 +239,7 @@ body .ri-arrow-up-s-fill {
   justify-content: space-between;
   align-items: center;
   padding-right: 20px;
-  font-family: 'Bill' !important;
+  font-family: 'IBM Plex Mono', monospace;
 }
 #bill p.thanking,
 #billKot p.thanking,
@@ -260,7 +258,7 @@ td{
 .ins{
   /* font-size: 12px; */
   font-weight: 200;
-  font-family: Arial !important;
+  font-family: 'IBM Plex Mono', monospace;
   text-decoration: underline;
 }
 .breakWord{

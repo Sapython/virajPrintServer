@@ -1,15 +1,297 @@
 
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <title>Bill</title>
+        <style>
+            @font-face {
+  font-family: 'IBM Plex Mono', monospace;
+  src: local('%/font/%') format('truetype');
+}
+
+
+#bill,
+#billKot,
+#cancelledBillKot,
+#reprintBillKot,
+#reprintBill {
+  /* visibility: hidden; */
+  font-family: 'IBM Plex Mono', monospace;
+}
+*{
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 400;
+}
+@page {
+  size: 85mm 297mm;
+  margin: 0.1cm;
+}
+body {
+  visibility: hidden;
+  margin: 0% !important;
+  padding: 0% !important;
+}
+body #productsContainer .productCard {
+  visibility: hidden;
+  display: none;
+}
+body header * {
+  visibility: hidden;
+  display: none;
+}
+body header #searchBar {
+  visibility: hidden !important;
+  display: none !important;
+}
+body .ri-arrow-right-s-line,
+body .ri-arrow-down-s-fill,
+body .ri-arrow-up-s-fill {
+  visibility: hidden;
+  display: none;
+}
+#bill,
+#billKot,
+#cancelledBillKot,
+#reprintBillKot,
+#reprintBill {
+  padding: 0% !important;
+  margin: 0% !important;
+  visibility: visible !important;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 72mm;
+  box-shadow: none;
+  font-size: 14px;
+  overflow-x: visible;
+}
+#bill *,
+#billKot *,
+#cancelledBillKot *,
+#reprintBillKot *,
+#reprintBill * {
+  overflow-x: visible;
+  margin: 3px !important;
+}
+#bill h3,
+#billKot h3,
+#cancelledBillKot h3,
+#reprintBillKot h3,
+#reprintBill h3 {
+  font-size: 18px !important;
+}
+#bill h4,
+#billKot h4,
+#cancelledBillKot h4,
+#reprintBillKot h4,
+#reprintBill h4 {
+  font-size: 14px !important;
+}
+#bill .topFields,
+#billKot .topFields,
+#cancelledBillKot .topFields,
+#reprintBillKot .topFields,
+#reprintBill .topFields {
+  font-size: 10px !important;
+  text-align: start;
+  padding-left: 10px;
+}
+#bill img,
+#billKot img,
+#cancelledBillKot img,
+#reprintBillKot img,
+#reprintBill img {
+  position: relative;
+  top: 0;
+  margin: 30px;
+  height: 200px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+#bill table,
+#billKot table,
+#cancelledBillKot table,
+#reprintBillKot table,
+#reprintBill table {
+  border-top: 2px solid black;
+  position: relative;
+  width:65mm;
+}
+#bill table tr th,
+#billKot table tr th,
+#cancelledBillKot table tr th,
+#reprintBillKot table tr th,
+#reprintBill table tr th {
+  font-size: 18px;
+  /* width:72mm; */
+  padding: 0px;
+  border-bottom: 2px solid black;
+}
+#bill table tr tr,
+#billKot table tr tr,
+#cancelledBillKot table tr tr,
+#reprintBillKot table tr tr,
+#reprintBill table tr tr {
+  border-bottom: 2px solid black;
+}
+#bill table tr th,
+#billKot table tr th,
+#cancelledBillKot table tr th,
+#reprintBillKot table tr th,
+#reprintBill table tr th,
+#bill table tr td,
+#billKot table tr td,
+#cancelledBillKot table tr td,
+#reprintBillKot table tr td,
+#reprintBill table tr td {
+  text-align: center;
+  font-size: 13px !important;
+  font-family: 'IBM Plex Mono', monospace;
+}
+#bill table tr td:nth-child(1),
+#billKot table tr td:nth-child(1),
+#cancelledBillKot table tr td:nth-child(1),
+#reprintBillKot table tr td:nth-child(1),
+#reprintBill table tr td:nth-child(1) {
+  text-align: start;
+}
+#bill hr,
+#billKot hr,
+#cancelledBillKot hr,
+#reprintBillKot hr,
+#reprintBill hr {
+  border-bottom: 2px solid black;
+  height: 0px;
+  padding: 0px;
+}
+#bill .row,
+#billKot .row,
+#cancelledBillKot .row,
+#reprintBillKot .row,
+#reprintBill .row {
+  display: flex;
+  justify-content: space-between;
+  /* width: 72mm; */
+}
+#bill .topFields,
+#billKot .topFields,
+#cancelledBillKot .topFields,
+#reprintBillKot .topFields,
+#reprintBill .topFields{
+  flex: 1;
+  word-wrap: break-word;
+}
+#bill .topFields:nth-child(1),
+#billKot .topFields:nth-child(1),
+#cancelledBillKot .topFields:nth-child(1),
+#reprintBillKot .topFields:nth-child(1),
+#reprintBill .topFields:nth-child(1){
+  flex: 2;
+  word-wrap: break-word;
+}
+#bill .row h4,
+#billKot .row h4,
+#cancelledBillKot .row h4,
+#reprintBillKot .row h4,
+#reprintBill .row h4 {
+  width: fit-content;
+}
+#bill .info,
+#billKot .info,
+#cancelledBillKot .info,
+#reprintBillKot .info,
+#reprintBill .info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+}
+#bill .detail,
+#billKot .detail,
+#cancelledBillKot .detail,
+#reprintBillKot .detail,
+#reprintBill .detail {
+  font-size: 12px;
+}
+#bill .tax,
+#billKot .tax,
+#cancelledBillKot .tax,
+#reprintBillKot .tax,
+#reprintBill .tax {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  margin-bottom: -5px;
+}
+#bill .tax p,
+#billKot .tax p,
+#cancelledBillKot .tax p,
+#reprintBillKot .tax p,
+#reprintBill .tax p {
+  margin-bottom: -5px;
+  padding: 0px;
+  font-size: 11px;
+}
+#bill .total,
+#billKot .total,
+#cancelledBillKot .total,
+#reprintBillKot .total,
+#reprintBill .total {
+  font-size: 19px;
+  font-weight: bold;
+  display: flex;
+  /* width:72mm; */
+  justify-content: space-between;
+  align-items: center;
+  padding-right: 20px;
+  font-family: 'IBM Plex Mono', monospace;
+}
+#bill p.thanking,
+#billKot p.thanking,
+#cancelledBillKot p.thanking,
+#reprintBillKot p.thanking,
+#reprintBill p.thanking {
+  font-size: 18px;
+  text-align: center;
+}
+.kotTokens{
+  font-size: 12px;
+}
+td{
+  font-weight: bold;
+}
+.ins{
+  /* font-size: 12px; */
+  font-weight: 200;
+  font-family: 'IBM Plex Mono', monospace;
+  text-decoration: underline;
+}
+.breakWord{
+  word-wrap: break-word;
+}
+
+
+        </style>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@200;400;500;600;700&display=swap" rel="stylesheet"> 
+    </head>
+    <body>
+    
 <div id="billKot">
     <h3 style="text-align: center">Dosa Plaza</h3>
-    <h4 style="text-align: center">10/04/2022 02:54 PM</h4>
-    <h4 style="text-align: center">Bill Id: 37</h4>
+    <h4 style="text-align: center">10/05/2022 01:48 AM</h4>
+    <h4 style="text-align: center">Bill Id: </h4>
     
     
     
     <div class="row">
-        <p class="kotTokens">Token: <span class="breakWord">1189</span></p>
+        <p class="kotTokens">Token: <span class="breakWord">208</span></p>
         
-            <p><b>Table No.:</b> 5</p>
+            <p><b>Table No.:</b> 2</p>
         
         
     </div>
@@ -23,7 +305,19 @@
         </tr>
         
             <tr>
-                <td>Veg fried rice</td>
+                <td>Hot garlic fried rice</td>
+                <td class="ins">Spicy</td>
+                <td>7</td>
+            </tr>
+        
+            <tr>
+                <td>Mushroom fried rice</td>
+                <td class="ins"></td>
+                <td>3</td>
+            </tr>
+        
+            <tr>
+                <td>Paneer fried rice</td>
                 <td class="ins"></td>
                 <td>1</td>
             </tr>
@@ -31,7 +325,25 @@
             <tr>
                 <td>Veg schezwan fried rice</td>
                 <td class="ins"></td>
+                <td>3</td>
+            </tr>
+        
+            <tr>
+                <td>Paneer hot chilli gravy</td>
+                <td class="ins"></td>
                 <td>1</td>
+            </tr>
+        
+            <tr>
+                <td>Stir fried with chinese greens</td>
+                <td class="ins"></td>
+                <td>1</td>
+            </tr>
+        
+            <tr>
+                <td>Veg chilli gravy</td>
+                <td class="ins"></td>
+                <td>3</td>
             </tr>
         
         
@@ -40,3 +352,6 @@
     <hr>
     
 </div>
+
+    </body>
+    
