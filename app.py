@@ -214,7 +214,7 @@ def getHtmlBody(data):
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <title>Bill</title>
         <style>
-            {open(stylePath, 'r').read()}
+            {open(stylePath, 'r').read().replace('%/font/%',os.path.abspath('/fonts/Space_Mono/SpaceMono-Regular.ttf'))}
         </style>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -267,7 +267,7 @@ def printKot():
     print(data)
     try:
         billInstance = environment.from_string(getHtmlBody(kotTemplate))
-        data['date'] = datetime.datetime.now().strftime("%m/%d/%Y %I:%M %p")
+        data['date'] = datetime.datetime.now().strftime("%d/%m/%Y %I:%M %p")
         index = 0
         for item in data['allProducts']:
             data['allProducts'][index]['dishName'] = item['dishName'].capitalize()
@@ -277,22 +277,22 @@ def printKot():
         )
         with open('temp_kot.html', 'w') as f:
             f.write(compiledKot)
-        date = datetime.datetime.now().strftime('%d-%m-%Y %H-%M-%S')
-        date = datetime.datetime.now().strftime('%d-%m-%Y %H-%M-%S')
+        date = datetime.datetime.now().strftime('%d-%m-%Y_%H-%M-%S')
         print(f'kots/kot_{date}.pdf')
         filename = f'kots/kot_{date}.pdf'
         # HTML(string=compiledKot).write_pdf(
         #     filename, stylesheets=[CSS(filename='style.css')])
         try:
-            output = subprocess.check_output('wkhtmltopdf --page-width 80mm --page-height 297mm -B 3mm -L 3mm -R 3mm -T 3mm temp_kot.html "' + filename+'"',creationflags=0x08000000,stderr=subprocess.STDOUT, shell=True, timeout=3,universal_newlines=True)
+            output = subprocess.check_output('wkhtmltopdf --page-width 72mm --page-height 297mm -B 3mm -L 3mm -R 5mm -T 3mm temp_kot.html "' + filename+'"',creationflags=0x08000000,stderr=subprocess.STDOUT, shell=True, timeout=3,universal_newlines=True)
         except subprocess.CalledProcessError as e:
             print(e)
         filename = os.path.abspath(filename)
-        print('FoxitReader.exe /t ' + filename,data['printer'])
+        print(filename)
+        print('FoxitReader.exe /t "' + filename + '" '+data['printer'])
         subprocess.call('FoxitReader.exe /t "' + filename + '" '+data['printer'],
                         creationflags=0x08000000)
-        subprocess.call('FoxitReader.exe /t "' + filename + '" '+data['printer'],
-                        creationflags=0x08000000)
+        # subprocess.call('FoxitReader.exe /t "' + filename + '" '+data['printer'],
+        #                 creationflags=0x08000000)
         return jsonify({"status": 'success'}), 200
     except Exception as e:
         return jsonify({"status": 'error', "error": str(e)}), 400
@@ -304,18 +304,19 @@ def printBill():
     print(data)
     try:
         billInstance = environment.from_string(getHtmlBody(billTemplate))
-        data['date'] = datetime.datetime.now().strftime("%m/%d/%Y")
+        data['date'] = datetime.datetime.now().strftime("%d/%m/%Y")
         data['time'] = datetime.datetime.now().strftime("%I:%M %p")
         index = 0
         for item in data['allProducts']:
             data['allProducts'][index]['dishName'] = item['dishName'].capitalize()
             index+=1
+        with open('incoming.json','w+') as fs:
+            fs.write(json.dumps(data))
         compiledKot= billInstance.render(
             currentBill=data
         )
         with open('temp_bill.html', 'w') as f:
             f.write(compiledKot)
-        date = datetime.datetime.now().strftime('%d-%m-%Y %H-%M-%S')
         date = datetime.datetime.now().strftime('%d-%m-%Y %H-%M-%S')
         print(f'kots/bill_{date}.pdf')
         filename = f'bills/bill_{date}.pdf'
@@ -325,7 +326,7 @@ def printBill():
             output = subprocess.check_output('wkhtmltopdf --page-width 80mm --page-height 297mm -B 3mm -L 3mm -R 3mm -T 3mm temp_bill.html "' + filename+'"',creationflags=0x08000000,stderr=subprocess.STDOUT, shell=True, timeout=3,universal_newlines=True)
         except subprocess.CalledProcessError as e:
             print(e)
-        print("Output",output)
+        # print("Output",output)
         filename = os.path.abspath(filename)
         print('FoxitReader.exe /t ' + filename)
         subprocess.call('FoxitReader.exe /t "' + filename + '" '+data['printer'],
