@@ -5,13 +5,14 @@ import win32api
 import win32print
 import datetime
 import jinja2
-import pdfkit
+# import pdfkit
 import os
-
+from flask_cors import CORS
 # os.add_dll_directory(r"C:\Program Files\GTK3-Runtime Win64\bin")
-from weasyprint import HTML, CSS
+# from weasyprint import HTML, CSS
 version = '1.0.0'
 app = Flask(__name__)
+CORS(app)
 environment = jinja2.Environment()
 billTemplate = '''
 <div id="bill">
@@ -227,6 +228,7 @@ def checkServertatus():
 @app.route('/getPrinters')
 def getPrinters():
     printers = win32print.EnumPrinters(win32print.PRINTER_ENUM_LOCAL, None, 1)
+    # printers = ["test1",'test2']
     printersList = []
     for printer in printers:
         print(printer)
