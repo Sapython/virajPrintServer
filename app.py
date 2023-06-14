@@ -1,8 +1,8 @@
 from urllib import response
 from flask import Flask, request, jsonify
-import win32printing
+# import win32printing
 import win32api
-import win32print
+# import win32print
 import datetime
 import jinja2
 # import pdfkit
@@ -82,10 +82,10 @@ billTemplate = '''
         </tr>
         {% for product in currentBill['allProducts'] %}
             <tr>
-                <td>{{product['dishName']}}</td>
+                <td>{{product['name']}}</td>
                 <td>{{product['quantity']}}</td>
-                <td>&#8377;{{product['shopPrice']}}</td>
-                <td>&#8377;{{product['shopPrice'] * product['quantity']}}</td>
+                <td>&#8377;{{product['price']}}</td>
+                <td>&#8377;{{product['price'] * product['quantity']}}</td>
             </tr>
         {% endfor %}
     </table>
@@ -171,11 +171,13 @@ kotTemplate = '''
     <table>
         <tr>
             <th>Product</th>
+            <th>Ins</th>
             <th>Qty</th>
         </tr>
         {% for product in data['allProducts'] %}
             <tr>
-                <td>{{product['dishName']}}</td>
+                <td>{{product['name']}}</td>
+                <td>{{product['instruction']}}</td>
                 <td>{{product['quantity']}}</td>
             </tr>
         {% endfor %}
@@ -331,18 +333,19 @@ def printBill():
         with open('temp_kot.html', 'w') as f:
             f.write(compiledKot)
         date = datetime.datetime.now().strftime('%d-%m-%Y %H-%M-%S')
-        print(f'kots/temp_kot_{date}.pdf')
-        filename = f'kots/kot_{date}.pdf'
-        HTML(string=compiledKot).write_pdf(filename,
-            stylesheets=[CSS(filename='style.css')])
+        # print(f'kots/temp_kot_{date}.pdf')
+        filename = f'bills/bill_{date}.pdf'
+        # HTML(string=compiledKot).write_pdf(filename,
+        #     stylesheets=[CSS(filename='style.css')])
+        # os.system(f'wkhtmltopdf temp_kot.html {filename}')
         # printers = win32print.EnumPrinters(win32print.PRINTER_ENUM_LOCAL, None, 1)
         # print(printers)
         # tempprinter = printers[5][2]
         # print(tempprinter,"filename",filename)
-        currentprinter = win32print.GetDefaultPrinter()
-        win32print.SetDefaultPrinter(data['printer'])
+        # currentprinter = win32print.GetDefaultPrinter()
+        # win32print.SetDefaultPrinter(data['printer'])
         print(win32api.ShellExecute(0, 'open', 'gsprint.exe' ,'-ghostscript -printer -all '+data['printer']+' ' + filename, '.', 0))
-        win32print.SetDefaultPrinter(currentprinter)
+        # win32print.SetDefaultPrinter(currentprinter)
         return compiledKot
     except Exception as e:
         return {"status": 'error', "error": str(e)}
