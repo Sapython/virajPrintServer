@@ -1,0 +1,66 @@
+<div id="billKot">
+    <h3 style="text-align: center">{{currentBill['currentProject']['projectName']}}</h3>
+    <h4 style="text-align: center">{{currentBill['date']}}</h4>
+    <h4 style="text-align: center">Bill Id: {{currentBill['billNo']}}</h4>
+    {% if currentBill['isNonChargeable'] %}
+        <h3>Non Chargeable</h3>
+    {% endif %}
+    {% if currentBill['cancelled'] %}
+        <h3>Cancelled</h3>
+    {% endif %}
+    {% if currentBill['mode']=='edited' %}
+        <h3>Modified</h3>
+    {% endif %}
+    <div class="row">
+        <p class="kotTokens">Token: <span class="breakWord">{{currentBill['tokenNo']}}</span></p>
+        {% if currentBill['currentTable']['type']=='table' %}
+            <p style="font-size:50px;" class="tbl"><b>Table No.:</b> {{currentBill['currentTable']['tableNo']}}</p>
+        {% endif %}
+        {% if currentBill['currentTable']['type']=='room' %}
+            <p class="tbl"><b>Room No.:</b> {{currentBill['currentTable']['tableNo']}}</p>
+        {% endif %}
+    </div>
+    {% if currentBill['cancelled'] %}
+    <table>
+        <tr>
+            <th>Product</th>
+            <th>Ins.</th>
+            <th>Qty</th>
+        </tr>
+        {% for product in currentBill['allProducts'] %}
+            <tr>
+                <td><del>{{product['dishName']}}</del></td>
+                <td class="ins"><del>{{product['instruction']}}</del></td>
+                <td><del>{{product['quantity']}}</del></td>
+            </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+    {% if not currentBill['cancelled'] %}
+    <table>
+        <tr>
+            <th>Product</th>
+            <th>Ins.</th>
+            <th>Qty</th>
+        </tr>
+        {% for product in currentBill['allProducts'] %}
+            <tr>
+                <td>{{product['dishName']}}</td>
+                <td class="ins">{{product['instruction']}}</td>
+                <td>{{product['quantity']}}</td>
+            </tr>
+        {% endfor %}
+        {% for product in currentBill['deleted'] %}
+            <tr>
+                <td><del>{{product['dishName']}}</del></td>
+                <td class="ins"><del>{{product['instruction']}}</del></td>
+                <td><del>{{product['quantity']}}</del></td>
+            </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+    <hr>
+    {% if specialInstructions %}
+        <p class="info">Special Instructions: {{currentBill['specialInstructions']}}</p>
+    {% endif %}
+</div>

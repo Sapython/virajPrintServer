@@ -6,9 +6,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <title>Bill</title>
         <style>
-            @font-face {
-        font-family: "Space Mono", monospace;
-        src: url("F:\fonts\Space_Mono\SpaceMono-Regular.ttf") format("truetype");
+            @import url('https://fonts.googleapis.com/css2?family=Overpass+Mono:wght@500;700&display=swap');
+@font-face {
+        font-family: 'Overpass Mono', monospace;   
+        src: url("./fonts/Overpass_Mono/OverpassMono-VariableFont_wght.ttf") format("truetype");
 }
 
 #bill,
@@ -17,10 +18,10 @@
 #reprintBillKot,
 #reprintBill {
         /* visibility: hidden; */
-        /* font-family: "Space Mono", monospace; */
+        font-family: 'Overpass Mono', monospace;
 }
 * {
-        /* font-family: "Space Mono", monospace; */
+        font-family: 'Overpass Mono', monospace;
         font-weight: 400;
 }
 @page {
@@ -64,7 +65,7 @@ body .ri-arrow-up-s-fill {
         left: 0px;
         width: 72mm;
         box-shadow: none;
-        font-size: 14px;
+        font-size: 20px;
         overflow-x: visible;
 }
 #bill *,
@@ -82,21 +83,21 @@ body .ri-arrow-up-s-fill {
 #reprintBillKot h3,
 #reprintBill h3 {
   width:100%;
-        font-size: 18px !important;
+        font-size: 20px !important;
 }
 #bill h4,
 #billKot h4,
 #cancelledBillKot h4,
 #reprintBillKot h4,
 #reprintBill h4 {
-        font-size: 14px !important;
+        font-size: 15px !important;
 }
 #bill .topFields,
 #billKot .topFields,
 #cancelledBillKot .topFields,
 #reprintBillKot .topFields,
 #reprintBill .topFields {
-        font-size: 10px !important;
+        font-size: 15px !important;
         text-align: start;
         padding-left: 10px;
 }
@@ -119,14 +120,14 @@ body .ri-arrow-up-s-fill {
 #reprintBill table {
         border-top: 2px solid black;
         position: relative;
-        width: 75mm;
+        width: 95mm;
 }
 #bill table tr th,
 #billKot table tr th,
 #cancelledBillKot table tr th,
 #reprintBillKot table tr th,
 #reprintBill table tr th {
-        font-size: 18px;
+        font-size: 25px;
         /* width:72mm; */
         padding: 0px;
         border-bottom: 2px solid black;
@@ -149,8 +150,8 @@ body .ri-arrow-up-s-fill {
 #reprintBillKot table tr td,
 #reprintBill table tr td {
         text-align: center;
-        font-size: 13px !important;
-        /* font-family: "Space Mono", monospace; */
+        font-size: 20px !important;
+        font-family: 'Overpass Mono', monospace;
 }
 #bill table tr td:nth-child(1),
 #billKot table tr td:nth-child(1),
@@ -167,6 +168,7 @@ body .ri-arrow-up-s-fill {
         border-bottom: 2px solid black;
         height: 0px;
         padding: 0px;
+        width:95mm;
 }
 #bill .row,
 #billKot .row,
@@ -217,16 +219,21 @@ body .ri-arrow-up-s-fill {
 #reprintBill .detail {
         font-size: 12px;
 }
+p{
+        width: fit-content !important;
+}
 #bill .tax,
 #billKot .tax,
 #cancelledBillKot .tax,
 #reprintBillKot .tax,
 #reprintBill .tax {
-        display: flex;
+        display: flex !important;
+        flex-direction: row !important;
         justify-content: space-between;
         align-items: center;
-        font-size: 11px;
+        font-size: 15px;
         margin-bottom: -5px;
+        width:95mm;
 }
 #bill .tax p,
 #billKot .tax p,
@@ -235,32 +242,36 @@ body .ri-arrow-up-s-fill {
 #reprintBill .tax p {
         margin-bottom: -5px;
         padding: 0px;
-        font-size: 11px;
+        font-size: 15px;
 }
 #bill .total,
 #billKot .total,
 #cancelledBillKot .total,
 #reprintBillKot .total,
 #reprintBill .total {
-        font-size: 19px;
+        font-size: 25px;
         font-weight: bold;
         display: flex;
         /* width:72mm; */
         justify-content: space-between;
         align-items: center;
         padding-right: 20px;
-        /* font-family: "Space Mono", monospace; */
+        font-family: 'Overpass Mono', monospace;
 }
 #bill p.thanking,
 #billKot p.thanking,
 #cancelledBillKot p.thanking,
 #reprintBillKot p.thanking,
 #reprintBill p.thanking {
-        font-size: 18px;
+        font-size: 20px;
         text-align: center;
 }
 .kotTokens {
-        font-size: 12px;
+        font-size: 20px !important;
+        
+}
+.tbl{
+        font-size: 20px !important;
 }
 td {
         font-weight: bold;
@@ -268,7 +279,7 @@ td {
 .ins {
         /* font-size: 12px; */
         font-weight: 200;
-        /* font-family: "Space Mono", monospace; */
+        font-family: 'Overpass Mono', monospace;
         text-decoration: underline;
 }
 .breakWord {
@@ -281,46 +292,30 @@ td {
         <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@200;400;500;600;700&display=swap" rel="stylesheet"> 
     </head>
     <body>
-    
-<div id="bill">
+    <div id="bill">
     <h3 style="text-align: center;font-style:bold;">Dosa Plaza</h3>
     
-        <h4 style="text-align: center"> 367 Ketka Jhunsi Prayagraj 211003 UP</h4>
+        <h4 style="text-align: center;"> 367 Ketka Jhunsi Prayagraj 211003 UP</h4>
     
     
-        <h4 style="text-align: center">Phone: 8874606666</h4>
+        <h4 style="text-align: center;">Phone: 8874606666</h4>
     
     
-        <div class="topFields">Paid With Cash</div> 
         
-        
-        
-    <hr>
-    
-        <div class="row">
-            <div class="topFields">GST No.09BBSPK3362B2ZK</div>
-            <div class="topFields">Date.08/10/2022</div>
-        </div>
-    
-    
-        <div class="topFields">FSSAI No.12721005000334</div>
-    
-    
-    
-    
     <div class="row">
-        <div class="topFields">Bill No: 234</div>
-        <div class="topFields">Time:01:23 PM</div>
+        <div class="topFields">Bill No: </div>
+        <div class="topFields">Time:02:17 PM</div>
     </div>
     
     
     <div class="row">
-        <h4 class="kotTokens">KOTs: <span class="breakWord">1878,  1880,  1888, </span></h4>
         
-            <h4><b>Table No.:</b> 1</h4>
+        
+            <h4><b>Table No.:</b> 14</h4>
         
         
     </div>
+    <h5 style="text-align: center;width:95mm">TAX INVOICE</h5>
     <table>
         <tr>
             <th>Product</th>
@@ -329,72 +324,28 @@ td {
             <th>Amt</th>
         </tr>
         
-            <tr>
-                <td>French fries</td>
-                <td>1</td>
-                <td>130</td>
-                <td>130</td>
-            </tr>
-        
-            <tr>
-                <td>Masala dosa</td>
-                <td>1</td>
-                <td>110</td>
-                <td>110</td>
-            </tr>
-        
-            <tr>
-                <td>Aloo paratha</td>
-                <td>2</td>
-                <td>80</td>
-                <td>160</td>
-            </tr>
-        
-            <tr>
-                <td>Small soft-drink</td>
-                <td>2</td>
-                <td>35</td>
-                <td>70</td>
-            </tr>
-        
-            <tr>
-                <td>Bottled water(1-liter)</td>
-                <td>1</td>
-                <td>19</td>
-                <td>19</td>
-            </tr>
-        
     </table>
     
     <hr>
     <div class="info">
-        <p>Total Qty: 7</p>
-        <p>Sub Total: &#8377;489</p>
+        
+        <p>Sub Total: &#8377;0</p>
     </div>
     
-        <hr>
-        
-            <div class="tax">
-                <p>10% Disc</p>
-                <p>10</p>
-                <p></p>
-            </div>
-        
-    
     <div class="tax">
-        <p>CGST</p>
-        <p>%2.5</p>
-        <p>&#8377;11.03</p>
+        <span>CGST</span>
+        <span>%2.5</span>
+        <span>&#8377;0.00</span>
     </div>
     <div class="tax">
-        <p>SGST</p>
-        <p>%2.5</p>
-        <p>&#8377;11.03</p>
+        <span>SGST</span>
+        <span>%2.5</span>
+        <span>&#8377;0.00</span>
     </div>
     <hr>
     <div class="total">
-        <p>Total</p>
-        <p>&#8377;464.00</p>
+        <span> Total</span>
+        <span>&#8377;0.00</span>
     </div>
     <p class="detail">*Net Total Inclusive of GST</p>
     <hr>
@@ -404,10 +355,22 @@ td {
         
         
     
+    
+        <div class="row">
+            <div class="topFields">GST No.09BBSPK3362B2ZK</div>
+            <div class="topFields">Date.29/10/2022</div>
+        </div>
+    
+    
+        <div class="topFields">FSSAI No.12721005000334</div>
+    
+    
+    
+    
     <hr>
+    
     <p class="thanking">Thanks for visiting </p>
     <p class="thanking"></p>
 </div>
-
     </body>
     

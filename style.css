@@ -1,5 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Overpass+Mono:wght@500;700&display=swap');
 @font-face {
-        font-family: "Space Mono", monospace;
+        font-family: 'Overpass Mono', monospace;   
         src: url("%/font/%") format("truetype");
 }
 
@@ -9,10 +10,10 @@
 #reprintBillKot,
 #reprintBill {
         /* visibility: hidden; */
-        /* font-family: "Space Mono", monospace; */
+        font-family: 'Overpass Mono', monospace;
 }
 * {
-        /* font-family: "Space Mono", monospace; */
+        font-family: 'Overpass Mono', monospace;
         font-weight: 400;
 }
 @page {
@@ -56,7 +57,7 @@ body .ri-arrow-up-s-fill {
         left: 0px;
         width: 72mm;
         box-shadow: none;
-        font-size: 14px;
+        font-size: 20px;
         overflow-x: visible;
 }
 #bill *,
@@ -74,21 +75,21 @@ body .ri-arrow-up-s-fill {
 #reprintBillKot h3,
 #reprintBill h3 {
   width:100%;
-        font-size: 18px !important;
+        font-size: 20px !important;
 }
 #bill h4,
 #billKot h4,
 #cancelledBillKot h4,
 #reprintBillKot h4,
 #reprintBill h4 {
-        font-size: 14px !important;
+        font-size: 15px !important;
 }
 #bill .topFields,
 #billKot .topFields,
 #cancelledBillKot .topFields,
 #reprintBillKot .topFields,
 #reprintBill .topFields {
-        font-size: 10px !important;
+        font-size: 15px !important;
         text-align: start;
         padding-left: 10px;
 }
@@ -111,14 +112,14 @@ body .ri-arrow-up-s-fill {
 #reprintBill table {
         border-top: 2px solid black;
         position: relative;
-        width: 75mm;
+        width: 95mm;
 }
 #bill table tr th,
 #billKot table tr th,
 #cancelledBillKot table tr th,
 #reprintBillKot table tr th,
 #reprintBill table tr th {
-        font-size: 18px;
+        font-size: 25px;
         /* width:72mm; */
         padding: 0px;
         border-bottom: 2px solid black;
@@ -141,8 +142,8 @@ body .ri-arrow-up-s-fill {
 #reprintBillKot table tr td,
 #reprintBill table tr td {
         text-align: center;
-        font-size: 13px !important;
-        /* font-family: "Space Mono", monospace; */
+        font-size: 20px !important;
+        font-family: 'Overpass Mono', monospace;
 }
 #bill table tr td:nth-child(1),
 #billKot table tr td:nth-child(1),
@@ -159,6 +160,7 @@ body .ri-arrow-up-s-fill {
         border-bottom: 2px solid black;
         height: 0px;
         padding: 0px;
+        width:95mm;
 }
 #bill .row,
 #billKot .row,
@@ -209,16 +211,21 @@ body .ri-arrow-up-s-fill {
 #reprintBill .detail {
         font-size: 12px;
 }
+p{
+        width: fit-content !important;
+}
 #bill .tax,
 #billKot .tax,
 #cancelledBillKot .tax,
 #reprintBillKot .tax,
 #reprintBill .tax {
-        display: flex;
+        display: flex !important;
+        flex-direction: row !important;
         justify-content: space-between;
         align-items: center;
-        font-size: 11px;
+        font-size: 15px;
         margin-bottom: -5px;
+        width:95mm;
 }
 #bill .tax p,
 #billKot .tax p,
@@ -227,32 +234,36 @@ body .ri-arrow-up-s-fill {
 #reprintBill .tax p {
         margin-bottom: -5px;
         padding: 0px;
-        font-size: 11px;
+        font-size: 15px;
 }
 #bill .total,
 #billKot .total,
 #cancelledBillKot .total,
 #reprintBillKot .total,
 #reprintBill .total {
-        font-size: 19px;
+        font-size: 25px;
         font-weight: bold;
         display: flex;
         /* width:72mm; */
         justify-content: space-between;
         align-items: center;
         padding-right: 20px;
-        /* font-family: "Space Mono", monospace; */
+        font-family: 'Overpass Mono', monospace;
 }
 #bill p.thanking,
 #billKot p.thanking,
 #cancelledBillKot p.thanking,
 #reprintBillKot p.thanking,
 #reprintBill p.thanking {
-        font-size: 18px;
+        font-size: 20px;
         text-align: center;
 }
 .kotTokens {
-        font-size: 12px;
+        font-size: 20px !important;
+        
+}
+.tbl{
+        font-size: 20px !important;
 }
 td {
         font-weight: bold;
@@ -260,7 +271,7 @@ td {
 .ins {
         /* font-size: 12px; */
         font-weight: 200;
-        /* font-family: "Space Mono", monospace; */
+        font-family: 'Overpass Mono', monospace;
         text-decoration: underline;
 }
 .breakWord {

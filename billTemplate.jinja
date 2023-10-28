@@ -1,0 +1,122 @@
+<div id="bill">
+    <h3 style="text-align: center;font-style:bold;">{{currentBill['currentProject']['projectName']}}</h3>
+    {% if currentBill['currentProject']['address'] %}
+        <h4 style="text-align: center;"> {{currentBill['currentProject']['address']}}</h4>
+    {% endif %}
+    {% if currentBill['currentProject']['phoneNumber'] %}
+        <h4 style="text-align: center;">Phone: {{currentBill['currentProject']['phoneNumber']}}</h4>
+    {% endif %}
+    {% if currentBill['isNonChargeable'] %}
+    <hr>
+        <h4 style="text-align:center;">COMPLIMENTARY BILL</h4>
+        <h5>{{currentBill['complimentaryName']}}</h5>
+    <hr>
+    {% endif %}
+        {# {% if currentBill['paymentMethod']=='cash' %}<div class="topFields">Paid With Cash</div> {% endif %}
+        {% if currentBill['paymentMethod']=='card' %}<div class="topFields">Paid With Card</div> {% endif %}
+        {% if currentBill['paymentMethod']=='dineIn' %}<div class="topFields">Dine In</div> {% endif %}
+        {% if currentBill['paymentMethod']=='pickUp' %}<div class="topFields">Pick Up</div> {% endif %}
+    <hr> #}
+    <div class="row">
+        <div class="topFields">Bill No: {{currentBill['billNo']}}</div>
+        <div class="topFields">Time:{{currentBill['time']}}</div>
+    </div>
+    {% if currentBill['customerInfoForm']['fullName'] %}
+    <h4 style="text-align: start">Name:
+        {{currentBill['customerInfoForm']['fullName']}}</h4>
+    {% endif %}
+    {% if currentBill['customerInfoForm']['phoneNumber'] %}
+    <h4 style="text-align: start">Phone:
+        {{currentBill['customerInfoForm']['phoneNumber']}}</h4>
+    {% endif %}
+    <div class="row">
+        {# <h4 class="kotTokens">KOTs: <span class="breakWord">{{currentBill['kotsToken']}}</span></h4> #}
+        {% if currentBill['currentTable']['type']=='table' %}
+            <h4><b>Table No.:</b> {{currentBill['currentTable']['tableNo']}}</h4>
+        {% endif %}
+        {% if currentBill['currentTable']['type']=='room' %}
+            <h4><b>Room No.:</b> {{currentBill['currentTable']['tableNo']}}</h4>
+        {% endif %}
+    </div>
+    <h5 style="text-align: center;width:95mm">TAX INVOICE</h5>
+    <table>
+        <tr>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Rate</th>
+            <th>Amt</th>
+        </tr>
+        {% for product in currentBill['allProducts'] %}
+            <tr>
+                <td>{{product['dishName']}}</td>
+                <td>{{product['quantity']}}</td>
+                <td>{{product['shopPrice']}}</td>
+                <td>{{product['shopPrice'] * product['quantity']}}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    {% if specialInstructions %}
+        <p class="info">Special Instructions: {{currentBill['specialInstructions']}}</p>
+        <hr>
+    {% endif %}
+    <hr>
+    <div class="info">
+        {# <p>Total Qty: {{currentBill['totalQuantity']}}</p> #}
+        <p>Sub Total: &#8377;{{currentBill['taxableValue']}}</p>
+    </div>
+    {% if (currentBill['selectDiscounts']|length) > 0 %}
+        <hr>
+        {% for discount in currentBill['selectDiscounts'] %}
+            <div class="tax">
+                <p>{{discount['title']}}</p>
+                <p>{{discount['discountValue']}}</p>
+                <p>{{discount['appliedDiscountValue']}}</p>
+            </div>
+        {% endfor %}
+    {% endif %}
+    <div class="tax">
+        <span>CGST</span>
+        <span>%2.5</span>
+        <span>&#8377;{{currentBill['cgst']}}</span>
+    </div>
+    <div class="tax">
+        <span>SGST</span>
+        <span>%2.5</span>
+        <span>&#8377;{{currentBill['sgst']}}</span>
+    </div>
+    <hr>
+    <div class="total">
+        <span> Total</span>
+        <span>&#8377;{{currentBill['grandTotal']}}</span>
+    </div>
+    <p class="detail">*Net Total Inclusive of GST</p>
+    <hr>
+    {% if currentBill['customerInfoForm'] %}
+        {% if currentBill['customerInfoForm']['name'] %} <p>Name: {{currentBill['customerInfoForm']['name']}}</p> {% endif %}
+        {% if currentBill['customerInfoForm']['email'] %} <p>Mail: {{currentBill['customerInfoForm']['email']}}</p> {% endif %}
+        {% if currentBill['customerInfoForm']['phone'] %} <p>Ph: {{currentBill['customerInfoForm']['phone']}}</p> {% endif %}
+        {% if currentBill['customerInfoForm']['address'] %} <p>Add: {{currentBill['customerInfoForm']['address']}}</p> {% endif %}
+    {% endif %}
+    {% if currentBill['currentProject']['gstNumber'] %}
+        <div class="row">
+            <div class="topFields">GST No.{{currentBill['currentProject']['gstNumber']}}</div>
+            <div class="topFields">Date.{{currentBill['date']}}</div>
+        </div>
+    {% endif %}
+    {% if currentBill['currentProject']['fssaiNo'] %}
+        <div class="topFields">FSSAI No.{{currentBill['currentProject']['fssaiNo']}}</div>
+    {% endif %}
+    {% if currentBill['currentProject']['counterNo'] %}
+        <div class="topFields">Counter No.{{currentBill['currentProject']['counterNo']}}</div>
+    {% endif %}
+    {% if currentBill['currentProject']['cashierName'] %}
+        <div class="topFields">Cashier.{{currentBill['currentProject']['cashierName']}}</div>
+    {% endif %}
+    {% if currentBill['currentProject']['deviceName'] %}
+        <div class="topFields">Device Name.{{currentBill['currentProject']['deviceName']}}</div>
+    {% endif %}
+    <hr>
+    
+    <p class="thanking">Thanks for visiting {{ currentBill['projectName'] }}</p>
+    <p class="thanking">{{ currentBill['website'] }}</p>
+</div>
